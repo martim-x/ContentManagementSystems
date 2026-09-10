@@ -15,4 +15,18 @@
   - `ЗФ/` — лабораторные заочной формы (ЛР 1–4).
 - `labN/` — материалы и решения по конкретным лабораторным.
 
-Дистрибутивы CMS (`*.zip`, `*.exe`) лежат рядом с лабами, но не версионируются — исключены `.gitignore`.
+## Быстрый запуск CMS (Docker)
+
+В папках ЛР лежат `docker-compose.yml` — поднимают CMS с БД одной командой:
+
+| CMS | Команда | Адрес |
+|---|---|---|
+| WordPress | `cd labs/WordPress && docker compose up -d` | http://localhost:8081 |
+| Joomla | `cd labs/Joomla && docker compose up -d` | http://localhost:8082 |
+| Drupal | `cd labs/Drupal && docker compose up -d` | http://localhost:8083 |
+
+Порты разные — можно запускать все три одновременно. Остановка: `docker compose down` (данные сохранятся в volumes; полный сброс — `docker compose down -v`).
+
+Oracle APEX локально не разворачивается — лабы делаются в облаке apex.oracle.com, см. `labs/Apex/README.md`.
+
+Дистрибутивы CMS (`*.zip`, `*.exe`) исключены `.gitignore` — используются docker-образы.

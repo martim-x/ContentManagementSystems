@@ -1,0 +1,32 @@
+# Joomla для ЛР. Запуск: docker compose up -d
+# Сайт: http://localhost:8082
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: joomla
+      MARIADB_DATABASE: joomla
+      MARIADB_USER: joomla
+      MARIADB_PASSWORD: joomla
+    volumes:
+      - db_data:/var/lib/mysql
+
+  joomla:
+    image: joomla:5
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8082:80"
+    environment:
+      JOOMLA_DB_HOST: db
+      JOOMLA_DB_USER: joomla
+      JOOMLA_DB_PASSWORD: joomla
+      JOOMLA_DB_NAME: joomla
+    volumes:
+      - joomla_data:/var/www/html
+
+volumes:
+  db_data:
+  joomla_data:
