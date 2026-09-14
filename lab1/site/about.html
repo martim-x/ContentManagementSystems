@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас — Город24</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="logo" href="index.html">Город<span class="dot">24</span></a>
+            <nav class="main-nav">
+                <a href="index.html">Главная</a>
+                <a href="news.html">Новости</a>
+                <a href="about.html" class="active">О нас</a>
+                <a href="city.html">Город</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <nav class="breadcrumbs">
+            <a href="index.html">Главная</a> / О нас
+        </nav>
+
+        <h1>О нас</h1>
+        <p style="max-width: 720px;">
+            «Город24» — независимое городское медиа. Мы пишем о Минске каждый день:
+            политика, экономика, спорт, культура и жизнь районов. Каждая новость
+            проходит редактуру и фактчекинг — мы не публикуем непроверенную информацию.
+        </p>
+        <p style="max-width: 720px;">
+            Портал работает с 2019 года. Издатель — ООО «Городской портал»,
+            свидетельство о регистрации СМИ № 0009551.
+        </p>
+
+        <!-- Редакция: одинаковые карточки — принцип сходства -->
+        <div class="section-title" style="margin-top: 40px;">
+            <h2>Редакция</h2>
+        </div>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="avatar"></div>
+                <h3>Анна Соколова</h3>
+                <p class="role">Главный редактор</p>
+            </div>
+            <div class="team-card">
+                <div class="avatar"></div>
+                <h3>Дмитрий Кравцов</h3>
+                <p class="role">Корреспондент, политика</p>
+            </div>
+            <div class="team-card">
+                <div class="avatar"></div>
+                <h3>Мария Лабецкая</h3>
+                <p class="role">Корреспондент, экономика</p>
+            </div>
+            <div class="team-card">
+                <div class="avatar"></div>
+                <h3>Павел Гринь</h3>
+                <p class="role">Фотограф</p>
+            </div>
+        </div>
+
+        <!-- Контакты + форма обратной связи -->
+        <div class="section-title" style="margin-top: 40px;">
+            <h2>Контакты и обратная связь</h2>
+        </div>
+        <p style="max-width: 720px;">
+            Адрес редакции: г. Минск, ул. Немига, 5, офис 312 (карта проезда — ниже).
+            Телефон: +375 (17) 305-24-24. Email: news@gorod24.by.
+        </p>
+
+        <!-- Наша история (продающая своя история) -->
+        <div class="section-title" style="margin-top: 40px;">
+            <h2>Наша история</h2>
+        </div>
+        <p style="max-width: 720px;">
+            В 2019 году мы начали как студенческий блог о жизни города: писали о
+            ремонте дворов и расписании автобусов. За семь лет выросли в редакцию
+            из 12 человек — и по-прежнему пишем о том, что волнует минчан каждый день.
+        </p>
+
+        <!-- Частые вопросы -->
+        <div class="section-title" style="margin-top: 40px;">
+            <h2>Частые вопросы</h2>
+        </div>
+        <div class="row-list" style="max-width: 720px;">
+            <div class="row-item" style="padding: 16px 20px;">
+                <div>
+                    <h3>Как предложить новость?</h3>
+                    <p>Через форму ниже или на почту news@gorod24.by — редакция отвечает в течение часа.</p>
+                </div>
+            </div>
+            <div class="row-item" style="padding: 16px 20px;">
+                <div>
+                    <h3>Как оформить премиум-подписку?</h3>
+                    <p>Первый месяц бесплатно до 31.10.2026, далее — 9,90 BYN в месяц, отмена в любой момент.</p>
+                </div>
+            </div>
+            <div class="row-item" style="padding: 16px 20px;">
+                <div>
+                    <h3>Можно ли разместить рекламу?</h3>
+                    <p>Да: баннеры и нативные статьи. Условия — по телефону редакции.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Партнёры (с кем работаем) -->
+        <div class="section-title" style="margin-top: 40px;">
+            <h2>Нам доверяют</h2>
+        </div>
+        <p style="max-width: 720px; color: var(--text-muted);">
+            Городские службы транспорта, музеи Минска, спортивные клубы
+            и более 40 рекламодателей — наши постоянные партнёры.
+        </p>
+
+        <div class="thumb thumb-city" style="max-width: 720px; height: 180px; border-radius: 12px; margin-top: 24px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 600;">
+            Карта проезда: ул. Немига, 5 — офис 312
+        </div>
+
+        <form style="margin-top: 24px;">
+            <div class="form-row">
+                <label for="name">Ваше имя</label>
+                <input type="text" id="name" name="name" placeholder="Как к вам обращаться">
+            </div>
+            <div class="form-row">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com">
+            </div>
+            <div class="form-row">
+                <label for="msg">Сообщение</label>
+                <textarea id="msg" name="msg" rows="5" placeholder="Предложить новость или задать вопрос"></textarea>
+            </div>
+            <button type="submit" class="btn btn-accent">Отправить</button>
+        </form>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <a class="logo" href="index.html">Город<span class="dot">24</span></a>
+                <p class="footer-contacts" style="margin-top: 12px;">
+                    Новостной портал Минска. Локальная повестка 24/7,<br>
+                    проверка фактов, без фейков.
+                </p>
+            </div>
+            <div>
+                <h3>Разделы</h3>
+                <ul>
+                    <li><a href="news.html">Новости</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                    <li><a href="city.html">Город</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3>Контакты</h3>
+                <p class="footer-contacts">
+                    +375 (17) 305-24-24<br>
+                    г. Минск, ул. Немига, 5<br>
+                    news@gorod24.by
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 ООО «Городской портал». Лицензия СМИ № 0009551</div>
+    </footer>
+
+    <a class="to-top" href="#" title="Наверх">↑</a>
+</body>
+</html>

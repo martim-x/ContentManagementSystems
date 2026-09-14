@@ -1,0 +1,244 @@
+<mxfile host="app.diagrams.net" agent="draw.io" version="24.7.7">
+  <diagram id="mindmap-news-portal" name="Интеллект-карта — штурм смыслов">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" shadow="0" background="#fdfdfd">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Центральный узел -->
+        <mxCell id="center" value="Новостной портал&#10;«Город24»" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#3563e9;strokeColor=#1d4cbb;fontColor=#ffffff;fontSize=16;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ПРАВЫЕ ВЕТВИ (пункты 1–9) ============ -->
+        <mxCell id="r1" value="1. Телефоны" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="40" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r1a" value="Стационарный: +375 (17) 305-24-24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="30" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r1b" value="Сотовый дежурного редактора: +375 (29) 305-24-24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="70" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r2" value="2. Фактический адрес" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="150" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r2a" value="г. Минск, ул. Немига, 5, офис 312" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="140" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r2b" value="Карта проезда — в разделе «О нас»" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="180" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r3" value="3. Продукты и услуги" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="260" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r3a" value="Рубрики: политика, экономика, спорт, культура" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="250" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r3b" value="Премиум без рекламы — 9,90 BYN/мес (локомотив — новости бесплатно)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="290" width="210" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r4" value="4. Дополнительные услуги" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="370" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r4a" value="Реклама: баннеры, нативные статьи" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="360" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r4b" value="Push/email-рассылка, медиашкола" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="400" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r5" value="5. Изображения" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="480" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r5a" value="Процесс: корреспондент на месте события" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="470" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r5b" value="Результат: фоторепортажи, инфографика" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="510" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r6" value="6. Для кого, кто клиент" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="590" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r6a" value="Потребитель: горожане 25–55 лет" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="580" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r6b" value="Партнёры: рекламодатели, PR-агентства" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="620" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r7" value="7. Преимущества" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="700" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r7a" value="250 тыс. читателей/мес, работаем с 2019 года" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="690" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r7b" value="Своя видеостудия, фактчекинг каждой новости" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="730" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r8" value="8. Сравнение с конкурентами" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="810" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r8a" value="Vs федеральные СМИ — больше города" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="800" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r8b" value="Vs соцсети — проверка фактов, без фейков" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="840" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r9" value="9. Акция" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="920" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r9a" value="Один месяц премиума — бесплатно" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="910" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r9b" value="Только до 31.10.2026 и только для новых читателей" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1530" y="950" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ЛЕВЫЕ ВЕТВИ (пункты 10–17) ============ -->
+        <mxCell id="l1" value="10. Команда и специалисты" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="95" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l1a" value="Гл. редактор — 15 лет в СМИ, 8 корреспондентов" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="85" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l1b" value="Фото и видео команды на сайте" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="125" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l2" value="11. Документы" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="205" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l2a" value="Лицензия СМИ № 0009551" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="195" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l2b" value="Редакционная политика, аккредитации" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="235" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l3" value="12. Бесплатность" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="315" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l3a" value="Все новости без оплаты, push-уведомления" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="305" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l3b" value="Гид «Как предложить новость» — бесплатно" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="345" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l4" value="13. Продающие истории" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="425" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l4a" value="Читателя: нашёл работу через наш раздел" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="415" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l4b" value="Своя: из студенческого блога — в медиа (текст + видео)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="455" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l5" value="14. С кем работаем" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="535" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l5a" value="Клиенты: читатели, премиум-подписчики" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="525" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l5b" value="Партнёры: рекламодатели, городские службы" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="565" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l6" value="15. Схема работы" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="645" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l6a" value="Событие → корреспондент → редактура" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="635" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l6b" value="Публикация в течение 60 минут" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="675" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l7" value="16. Частые вопросы" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="755" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l7a" value="Как предложить новость, как подписаться" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="745" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l7b" value="Форма «Задать вопрос» — на странице «О нас»" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="785" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l8" value="17. Форма собственности" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="865" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l8a" value="ООО «Городской портал»" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="855" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l8b" value="Редакция независимого медиа" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e0;fontColor=#2c3e50;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="895" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ============ РЁБРА: центр → ветви (изогнутые) ============ -->
+        <mxCell id="ec-r1" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r2" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r3" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r4" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r5" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r6" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r7" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r8" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-r9" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="center" target="r9"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="ec-l1" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l2" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l3" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l4" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l5" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l6" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l7" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ec-l8" style="curved=1;endArrow=none;html=1;strokeColor=#90a3bf;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="center" target="l8"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Рёбра: ветвь → подпункты -->
+        <mxCell id="es-r1a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r1" target="r1a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r1b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r1" target="r1b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r2a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r2" target="r2a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r2b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r2" target="r2b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r3a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r3" target="r3a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r3b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r3" target="r3b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r4a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r4" target="r4a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r4b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r4" target="r4b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r5a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r5" target="r5a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r5b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r5" target="r5b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r6a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r6" target="r6a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r6b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r6" target="r6b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r7a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r7" target="r7a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r7b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r7" target="r7b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r8a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r8" target="r8a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r8b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r8" target="r8b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r9a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r9" target="r9a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-r9b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="r9" target="r9b"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="es-l1a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l1" target="l1a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l1b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l1" target="l1b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l2a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l2" target="l2a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l2b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l2" target="l2b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l3a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l3" target="l3a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l3b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l3" target="l3b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l4a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l4" target="l4a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l4b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l4" target="l4b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l5a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l5" target="l5a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l5b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l5" target="l5b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l6a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l6" target="l6a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l6b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l6" target="l6b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l7a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l7" target="l7a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l7b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l7" target="l7b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l8a" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l8" target="l8a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="es-l8b" style="endArrow=none;html=1;strokeColor=#cbd5e0;" edge="1" parent="1" source="l8" target="l8b"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

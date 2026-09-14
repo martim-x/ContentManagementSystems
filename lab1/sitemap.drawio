@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="draw.io" version="24.7.7">
+  <diagram id="news-portal-sitemap" name="Карта сайта — Новостной портал">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0" background="#fdfdfd">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Уровень 0: главная страница -->
+        <mxCell id="home" value="Главная страница&#10;index.html" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#3563e9;strokeColor=#1d4cbb;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="80" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Уровень 1: страницы сайта -->
+        <mxCell id="news" value="Новости&#10;news.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="about" value="О нас&#10;about.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="240" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="city" value="Город&#10;city.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eff6;strokeColor=#3563e9;fontColor=#1d4cbb;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="240" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Уровень 2: содержимое страниц (разделы внутри страницы) -->
+        <mxCell id="news-rubrics" value="Рубрики: Политика, Экономика,&#10;Спорт, Культура — внутри страницы" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6f7f9;strokeColor=#90a3bf;fontColor=#7f8c8d;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="380" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="about-content" value="Редакция, документы,&#10;контакты и форма связи" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6f7f9;strokeColor=#90a3bf;fontColor=#7f8c8d;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="380" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="city-content" value="Афиша, погода, транспорт,&#10;справочник — внутри страницы" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6f7f9;strokeColor=#90a3bf;fontColor=#7f8c8d;fontSize=11;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="380" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Рёбра -->
+        <mxCell id="e-home-news" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#3563e9;endArrow=block;endFill=1;" edge="1" parent="1" source="home" target="news">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-home-about" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#3563e9;endArrow=block;endFill=1;" edge="1" parent="1" source="home" target="about">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-home-city" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#3563e9;endArrow=block;endFill=1;" edge="1" parent="1" source="home" target="city">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-news-rubrics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#90a3bf;dashed=1;endArrow=open;endFill=0;" edge="1" parent="1" source="news" target="news-rubrics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-about-content" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#90a3bf;dashed=1;endArrow=open;endFill=0;" edge="1" parent="1" source="about" target="about-content">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-city-content" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#90a3bf;dashed=1;endArrow=open;endFill=0;" edge="1" parent="1" source="city" target="city-content">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
