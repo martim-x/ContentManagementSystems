@@ -1,5 +1,6 @@
-# WordPress для ЛР. Запуск: docker compose up -d
-# Сайт: http://localhost:8081
+# WordPress для ЛР №2. Запуск: docker compose up -d
+# Сайт: http://localhost:8081, админка: http://localhost:8081/wp-admin
+# WP-CLI:  docker compose run --rm wpcli <команда>   (например: wp plugin list)
 services:
   db:
     image: mariadb:11
@@ -11,12 +12,18 @@ services:
       MARIADB_PASSWORD: wordpress
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   wordpress:
     image: wordpress:latest
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8081:80"
     environment:
@@ -26,6 +33,27 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - wp_data:/var/www/html
+      # Тема из ЛР №2 (свёрстана на основе вёрстки ЛР №1)
+      - ../../lab2/theme/gorod24:/var/www/html/wp-content/themes/gorod24
+
+  wpcli:
+    image: wordpress:cli
+    depends_on:
+      db:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wp_data:/var/www/html
+      - ../../lab2/theme/gorod24:/var/www/html/wp-content/themes/gorod24
+    entrypoint: ["wp"]
+    command: ["--info"]
 
 volumes:
   db_data:
