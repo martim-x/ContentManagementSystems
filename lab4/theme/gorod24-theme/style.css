@@ -1,0 +1,32 @@
+/*
+Theme Name: Город24
+Theme URI: http://localhost:8094/
+Author: Студент БГУИТ, группа ИСиТ
+Description: Тема новостного портала «Город24», перенесённая с вёрстки из ЛР1 на WordPress. Основа — скелет _s с underscores.me, наполнение — собственная вёрстка: header.php, footer.php, page.php, functions.php.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 7.1
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: gorod24
+Tags: новости, портал, город, бизнес, две колонки, правое меню
+*/
+
+/*
+Задание №5 ЛР4: папка с вёрсткой (css) перенесена в папку темы.
+Задание №8 ЛР4: сам файл стилей подключается из functions.php через
+wp_enqueue_style() и путь get_template_directory_uri() . '/css/style.css'.
+
+WordPress требует, чтобы в корне темы лежал файл style.css — именно
+из него движок читает заголовок темы (Theme Name, Version, Author).
+Поэтому здесь только заголовок, а правила подключаются директивой
+@import из css/style.css: так выполняется требование WordPress и
+одновременно сохраняется структура вёрстки из ЛР1 (папка css рядом
+с папкой js и assets).
+
+Если браузер не подхватит @import, значит style.css подключается
+дважды — этого можно избежать, убрав директиву, но тогда тема
+перестанет определяться движком.
+*/
+@import url("css/style.css");
