@@ -19,10 +19,14 @@ sh setup-gorod24.sh                  # (первый раз) WP + плагины
 ## Что внутри
 | Контейнер | Роль | Аналог в OpenServer |
 |---|---|---|
-| `db` (MariaDB 11) | база данных WordPress | MySQL из OpenServer |
-| `wordpress` | веб-сервер + PHP + движок WP | Apache + PHP из OpenServer |
-| `wpcli` | WP-CLI — командная строка WP (автоматизация) | — |
-| `phpmyadmin` | веб-интерфейс к базе | phpMyAdmin из OpenServer |
+| `cms-wordpress-db` (MariaDB 11) | база данных WordPress | MySQL из OpenServer |
+| `cms-wordpress-web` | веб-сервер + PHP + движок WP | Apache + PHP из OpenServer |
+| `cms-wordpress-wpcli` | WP-CLI — командная строка WP (автоматизация) | — |
+| `cms-wordpress-phpmyadmin` | веб-интерфейс к базе | phpMyAdmin из OpenServer |
+
+Имя проекта compose задано явно в `docker-compose.yml` (`name: cms-wordpress-group`), а у каждого
+сервиса стоит `container_name` — поэтому контейнеры называются как выше, без автоматических
+суффиксов вида `-1`. Тома: `cms-wordpress-db-data`, `cms-wordpress-wp-data`.
 
 **Почему MariaDB:** MySQL-совместимая БД без лицензионных ограничений Oracle; WordPress работает с ней без изменений. **Зачем OpenServer в ТЗ:** методичка под Windows — OpenServer это «Apache+MySQL+PHP в одном установщике»; Docker заменяет его тем же набором контейнеров.
 
@@ -54,7 +58,7 @@ sh setup-gorod24.sh                  # (первый раз) WP + плагины
 12. Дамп `report/gorod24-2026-09-25.sql` / UpdraftPlus — резервная копия (з.5)
 
 ## Персистентность данных
-Данные WordPress (файлы) и БД лежат в docker-томах `wp_data` и `db_data`:
+Данные WordPress (файлы) и БД лежат в томах `cms-wordpress-wp-data` и `cms-wordpress-db-data`:
 - `docker compose restart` / `down` — **всё сохраняется**;
 - только `docker compose down -v` удаляет тома (полный сброс).
 
