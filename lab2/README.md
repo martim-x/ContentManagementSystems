@@ -19,14 +19,15 @@ sh setup-gorod24.sh                  # (первый раз) WP + плагины
 ## Что внутри
 | Контейнер | Роль | Аналог в OpenServer |
 |---|---|---|
-| `cms-wordpress-db` (MariaDB 11) | база данных WordPress | MySQL из OpenServer |
-| `cms-wordpress-web` | веб-сервер + PHP + движок WP | Apache + PHP из OpenServer |
-| `cms-wordpress-wpcli` | WP-CLI — командная строка WP (автоматизация) | — |
-| `cms-wordpress-phpmyadmin` | веб-интерфейс к базе | phpMyAdmin из OpenServer |
+| `db` (MariaDB 11) | база данных WordPress | MySQL из OpenServer |
+| `web` | веб-сервер + PHP + движок WP | Apache + PHP из OpenServer |
+| `wpcli` | WP-CLI — командная строка WP (автоматизация) | — |
+| `phpmyadmin` | веб-интерфейс к базе | phpMyAdmin из OpenServer |
 
-Имя проекта compose задано явно в `docker-compose.yml` (`name: cms-wordpress-group`), а у каждого
-сервиса стоит `container_name` — поэтому контейнеры называются как выше, без автоматических
-суффиксов вида `-1`. Тома: `cms-wordpress-db-data`, `cms-wordpress-wp-data`.
+Проект compose называется `cms-wordpress-group` (`name:` в `docker-compose.yml`), но имена
+контейнеров короткие — у каждого сервиса свой `container_name`, поэтому в `docker ps` видно
+`db`, `web`, `wpcli`, `phpmyadmin` без префикса и суффикса `-1`. Тома: `cms-wordpress-db-data`,
+`cms-wordpress-wp-data`.
 
 **Почему MariaDB:** MySQL-совместимая БД без лицензионных ограничений Oracle; WordPress работает с ней без изменений. **Зачем OpenServer в ТЗ:** методичка под Windows — OpenServer это «Apache+MySQL+PHP в одном установщике»; Docker заменяет его тем же набором контейнеров.
 
