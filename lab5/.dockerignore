@@ -1,0 +1,9 @@
+report/
+.DS_Store
+**/.DS_Store
+README.md
+docker-compose.yml
+setup-lab5.sh
+make-ru-language.sh
+Dockerfile
+.dockerignore

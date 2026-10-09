@@ -1,0 +1,190 @@
+/**
+ * mod_gorod24contact — оформление компактной формы контакта.
+ *
+ * Свёрнутое состояние — кнопка во всю ширину блока; развёрнутое —
+ * форма с тремя полями и капчей. Всё оформление завязано на переменную
+ * --g24-color, которую модуль передаёт из настроек, поэтому цвет
+ * меняется без правки CSS.
+ */
+
+.g24contact {
+	--g24-radius: 10px;
+	--g24-gap: 12px;
+
+	margin: 0 0 24px;
+	font-size: 0.95rem;
+}
+
+.g24contact__notice {
+	margin: 0 0 12px;
+	padding: 10px 14px;
+	border-radius: var(--g24-radius);
+	border-left: 4px solid;
+	font-size: 0.9rem;
+	line-height: 1.4;
+}
+
+.g24contact__notice--success {
+	background: #ecfdf5;
+	border-color: #059669;
+	color: #065f46;
+}
+
+.g24contact__notice--error {
+	background: #fef2f2;
+	border-color: #dc2626;
+	color: #991b1b;
+}
+
+/* --- Свёрнутое состояние: только кнопка ------------------------------- */
+.g24contact__box {
+	border: 1px solid #e2e8f0;
+	border-radius: var(--g24-radius);
+	background: #fff;
+	overflow: hidden;
+}
+
+.g24contact__summary {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 12px 16px;
+	background: var(--g24-color);
+	color: #fff;
+	font-weight: 600;
+	cursor: pointer;
+	list-style: none;
+	user-select: none;
+}
+
+.g24contact__summary::-webkit-details-marker {
+	display: none;
+}
+
+.g24contact__summary:hover,
+.g24contact__summary:focus-visible {
+	filter: brightness(1.08);
+}
+
+.g24contact__summary:focus-visible {
+	outline: 3px solid #94a3b8;
+	outline-offset: -3px;
+}
+
+.g24contact__summary-icon {
+	font-size: 1.05em;
+}
+
+/* Стрелка показывает направление: вправо свернуто, вниз развёрнуто. */
+.g24contact__summary::after {
+	content: "›";
+	margin-left: auto;
+	font-size: 1.3em;
+	line-height: 1;
+	transform: rotate(90deg);
+	transition: transform 0.15s ease;
+}
+
+.g24contact__box[open] .g24contact__summary::after {
+	transform: rotate(-90deg);
+}
+
+/* --- Развёрнутое состояние: форма -------------------------------------- */
+.g24contact__form {
+	padding: 16px;
+	border-top: 1px solid #e2e8f0;
+}
+
+.g24contact__row {
+	margin: 0 0 var(--g24-gap);
+}
+
+.g24contact__row label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+	font-size: 0.88rem;
+	color: #1f2937;
+}
+
+.g24contact__row input[type="text"],
+.g24contact__row input[type="email"],
+.g24contact__row textarea {
+	width: 100%;
+	padding: 9px 11px;
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	background: #fff;
+	color: #0f172a;
+	font: inherit;
+	line-height: 1.4;
+}
+
+.g24contact__row textarea {
+	resize: vertical;
+}
+
+.g24contact__row input:focus,
+.g24contact__row textarea:focus {
+	outline: none;
+	border-color: var(--g24-color);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--g24-color) 22%, transparent);
+}
+
+.g24contact__row--captcha {
+	padding: 10px 12px;
+	border: 1px dashed #cbd5e1;
+	border-radius: 8px;
+	background: #f8fafc;
+}
+
+.g24contact__captcha {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.g24contact__captcha-q {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #1f2937;
+	letter-spacing: 0.5px;
+}
+
+.g24contact__captcha input {
+	width: 72px;
+	padding: 7px 9px;
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	font: inherit;
+	font-weight: 700;
+	text-align: center;
+}
+
+.g24contact__actions {
+	margin: 16px 0 8px;
+}
+
+.g24contact__button {
+	width: 100%;
+	padding: 11px 18px;
+	border: 0;
+	border-radius: 8px;
+	background: var(--g24-color);
+	color: #fff;
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.g24contact__button:hover,
+.g24contact__button:focus-visible {
+	filter: brightness(1.08);
+}
+
+.g24contact__hint {
+	margin: 0;
+	font-size: 0.8rem;
+	color: #64748b;
+}
