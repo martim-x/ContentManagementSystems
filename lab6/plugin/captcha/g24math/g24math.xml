@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="captcha" method="upgrade">
+	<name>plg_captcha_g24math</name>
+	<author>Город24, ЛР6</author>
+	<creationDate>2026-10</creationDate>
+	<version>1.0.0</version>
+	<description>Капча «сложение двух цифр» для защиты форм от спама (задание 4 ЛР6).</description>
+	<files>
+		<filename plugin="g24math">g24math.php</filename>
+		<folder>src</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_captcha_g24math.ini</language>
+		<language tag="ru-RU">language/ru-RU/plg_captcha_g24math.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic"></fieldset>
+		</fields>
+	</config>
+</extension>

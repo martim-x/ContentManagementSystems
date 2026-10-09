@@ -1,0 +1,53 @@
+/* Кнопки шеринга «Город24» — цвета брендов соцсетей */
+.g24share {
+	--g24share-radius: 10px;
+}
+
+.g24share__heading {
+	font-size: .95rem;
+	font-weight: 600;
+	margin: 0 0 .5rem;
+}
+
+.g24share__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: .4rem;
+}
+
+.g24share__item a {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .45rem .75rem;
+	border-radius: var(--g24share-radius);
+	color: #fff;
+	font-size: .9rem;
+	text-decoration: none;
+	transition: filter .15s ease;
+}
+
+.g24share__item a:hover,
+.g24share__item a:focus {
+	filter: brightness(1.12);
+	color: #fff;
+	text-decoration: none;
+}
+
+.g24share__icon {
+	display: inline-flex;
+	width: 1.5rem;
+	height: 1.5rem;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, .18);
+	border-radius: 50%;
+	font-size: .85rem;
+}
+
+.g24share__item--telegram a { background: #229ed9; }
+.g24share__item--vk a       { background: #0077ff; }
+.g24share__item--x a        { background: #111111; }
+.g24share__item--whatsapp a { background: #25d366; }

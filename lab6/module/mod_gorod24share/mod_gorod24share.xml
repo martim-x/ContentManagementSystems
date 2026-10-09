@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade">
+	<name>mod_gorod24share</name>
+	<author>Город24, ЛР6</author>
+	<creationDate>2026-10</creationDate>
+	<version>1.0.0</version>
+	<description>Кнопки шеринга социальных сетей (Telegram, VK, X, WhatsApp) — задание 6 ЛР6.</description>
+	<files>
+		<filename module="mod_gorod24share">mod_gorod24share.php</filename>
+		<folder>tmpl</folder>
+		<folder>assets</folder>
+		<folder>language</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="heading" type="text" label="Заголовок блока" default="Поделиться новостью" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>
