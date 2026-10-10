@@ -123,6 +123,11 @@ class JConfig
 	public $offset    = '+03:00';
 	public $timezone  = 'Europe/Minsk';
 
+	// Редактор по умолчанию: поле editor в форме статьи берёт провайдера
+	// из $app->get('editor'); если ключа нет, Editor::getInstance(null)
+	// падает TypeError'ом при открытии «Материалы → создать/изменить».
+	public $editor    = 'tinymce';
+
 	public $dbtype_pdo = 'mysql';
 }
 
