@@ -1,0 +1,8 @@
+report/
+.DS_Store
+**/.DS_Store
+README.md
+docker-compose.yml
+setup-lab7.sh
+Dockerfile
+.dockerignore

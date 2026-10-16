@@ -1,0 +1,66 @@
+name: cms-joomla-lab7
+
+services:
+  db:
+    image: mariadb:11
+    container_name: db7
+    environment:
+      MARIADB_DATABASE: joomla
+      MARIADB_USER: joomla
+      MARIADB_PASSWORD: joomla
+      MARIADB_ROOT_PASSWORD: joomla
+    volumes:
+      - db_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - lab7
+
+  web:
+    build: .
+    container_name: web7
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8102:80"
+    environment:
+      JOOMLA_DB_HOST: db
+      JOOMLA_DB_USER: joomla
+      JOOMLA_DB_PASSWORD: joomla
+      JOOMLA_DB_NAME: joomla
+    volumes:
+      - joomla_data:/var/www/html
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /var/www/html/installation/index.php || test -f /var/www/html/configuration.php"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+    networks:
+      - lab7
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin7
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8103:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: joomla
+      PMA_PASSWORD: joomla
+    networks:
+      - lab7
+
+volumes:
+  db_data:
+  joomla_data:
+
+networks:
+  lab7:
