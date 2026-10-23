@@ -50,7 +50,7 @@ function menu_item($data) {
             $vals[":".$k] = $data[$k] ?? null;
         }
         // Для простоты обновляем только основные поля, не всё дерево.
-        $update = array('title' => $data['title'], 'alias' => $data['alias'], 'link' => $data['link'], 'access' => $data['access'], 'published' => $data['published'], 'params' => $data['params'] ?? '{}');
+        $update = array('title' => $data['title'], 'alias' => $data['alias'], 'link' => $data['link'], 'access' => $data['access'], 'published' => $data['published'], 'params' => $data['params'] ?? '{}', 'component_id' => $data['component_id'] ?? 0);
         $update_sql = array(); $update_vals = array(':id' => $item_id);
         foreach ($update as $k => $v) {
             $update_sql[] = "`{$k}` = :{$k}";
@@ -87,6 +87,7 @@ menu_item(array(
     'access' => 1,
     'type' => 'component',
     'published' => 1,
+    'component_id' => 22,
     'params' => '{}',
     'path' => 'registraciya',
 ));
@@ -102,6 +103,7 @@ menu_item(array(
     'access' => 1,
     'type' => 'component',
     'published' => 1,
+    'component_id' => 22,
     'params' => '{}',
     'path' => 'vhod',
 ));
