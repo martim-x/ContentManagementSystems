@@ -1,0 +1,55 @@
+name: cms-drupal-lab8
+
+services:
+  db:
+    image: postgres:16
+    container_name: db8
+    environment:
+      POSTGRES_DB: drupal
+      POSTGRES_USER: drupal
+      POSTGRES_PASSWORD: drupal
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U drupal"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - lab8
+
+  web:
+    build: .
+    container_name: web8
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8104:80"
+    volumes:
+      - web_data:/var/www/html
+    healthcheck:
+      test: ["CMD-SHELL", "test -d /var/www/html"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lab8
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer8
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8105:8080"
+    networks:
+      - lab8
+
+volumes:
+  db_data:
+  web_data:
+
+networks:
+  lab8:
