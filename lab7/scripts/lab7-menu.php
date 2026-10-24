@@ -126,7 +126,7 @@ $ext_content = $r_ext ? $r_ext[0]['extension_id'] : 22; // стандартны�
 menu_item(array(
     'alias' => 'sozdat-material-dekan',
     'title' => 'Создать материал (декан)',
-    'link' => 'index.php?option=com_content&view=form',
+    'link' => 'index.php?option=com_content&view=form&layout=edit',
     'parent_id' => 1,
     'access' => $lvl_starosta ?? 3,
     'type' => 'component',
@@ -142,7 +142,7 @@ menu_item(array(
 menu_item(array(
     'alias' => 'sozdat-material-starosta',
     'title' => 'Создать материал (староста)',
-    'link' => 'index.php?option=com_content&view=form',
+    'link' => 'index.php?option=com_content&view=form&layout=edit',
     'parent_id' => 1,
     'access' => $lvl_starosta ?? 3,
     'type' => 'component',

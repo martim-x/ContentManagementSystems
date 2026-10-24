@@ -68,6 +68,7 @@ function set_perm(&$rules, $component, $action, $group_ids, $allowed) {
 // com_menus — создание/редактирование пунктов
 // com_users — управление пользователями (для назначения доступа требуется управление группами/уровнями)
 // com_config — общие настройки (назначение прав доступа на уровне системы)
+set_perm($rules, 'core', 'login.site', array($grp_dekan), 1);
 set_perm($rules, 'core', 'login.admin', array($grp_dekan), 1);
 set_perm($rules, 'core', 'manage', array($grp_dekan), 1);
 set_perm($rules, 'core', 'create', array($grp_dekan), 1);
@@ -113,6 +114,54 @@ set_perm($rules, 'com_content', 'edit.state', array($grp_student), 0);
 db_query("UPDATE `jos_assets` SET rules = :r WHERE id = 1",
     array(':r' => json_encode($rules, JSON_UNESCAPED_UNICODE)));
 echo "права групп в Общих настройках (корневой актив) обновлены\n";
+
+// Обновляем активы компонентов: в Joomla права наследуются от родителя,
+// но если у компонента уже заданы свои правила (com_content, com_menus, ...),
+// они переопределяют корневые. Поэтому явно добавляем группы в активы компонентов.
+function merge_asset_rules($asset_name, $actions_groups) {
+    $row = db_query("SELECT id, rules FROM `jos_assets` WHERE name = :n", array(':n' => $asset_name));
+    if (!$row) { echo "  актив {$asset_name}: не найден, пропускаем\n"; return; }
+    $id = $row[0]['id'];
+    $r = json_decode($row[0]['rules'], true);
+    if (!is_array($r)) $r = array();
+    foreach ($actions_groups as $action => $groups) {
+        if (!isset($r[$action]) || !is_array($r[$action])) $r[$action] = array();
+        foreach ($groups as $gid => $allowed) {
+            $r[$action][$gid] = $allowed ? 1 : 0;
+        }
+    }
+    db_query("UPDATE `jos_assets` SET rules = :r WHERE id = :id",
+        array(':r' => json_encode($r, JSON_UNESCAPED_UNICODE), ':id' => $id));
+    echo "  актив {$asset_name}: обновлён\n";
+}
+
+// com_content: декан и старосты могут создавать/редактировать статьи.
+merge_asset_rules('com_content', array(
+    'core.create'     => array($grp_dekan => 1, $grp_starosta => 1, $grp_student => 0),
+    'core.edit'       => array($grp_dekan => 1, $grp_starosta => 1, $grp_student => 0),
+    'core.edit.own'   => array($grp_dekan => 1, $grp_starosta => 1, $grp_student => 0),
+    'core.edit.state' => array($grp_dekan => 1, $grp_starosta => 1, $grp_student => 0),
+    'core.delete'     => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+));
+
+// com_menus: только декан создаёт/редактирует пункты меню.
+merge_asset_rules('com_menus', array(
+    'core.create'     => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+    'core.edit'       => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+    'core.edit.state' => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+));
+
+// com_users: декан управляет пользователями (назначение видимости/групп).
+merge_asset_rules('com_users', array(
+    'core.manage' => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+    'core.create' => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+    'core.edit'   => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+));
+
+// com_config: декан управляет общими настройками.
+merge_asset_rules('com_config', array(
+    'core.manage' => array($grp_dekan => 1, $grp_starosta => 0, $grp_student => 0),
+));
 
 // Также нужно, чтобы «назначать тех, кто видит» (изменение уровня доступа статьи/меню)
 // было доступно декану. Для этого достаточно права `core.edit.state` на com_content и com_menus,

@@ -98,4 +98,32 @@ $st1 = upsert_user('student1', 'Студент №1', 'student1@gorod24.by', [$g
 $st2 = upsert_user('student2', 'Студент №2', 'student2@gorod24.by', [$grp_student], $hash_user);
 $st3 = upsert_user('student3', 'Студент №3', 'student3@gorod24.by', [$grp_student], $hash_user);
 
+// Пересчёт вложенных множеств (lft/rgt) для групп пользователей.
+// Без этого Joomla неправильно определяет унаследованные группы и права.
+$groups = db_query("SELECT id, parent_id FROM `jos_usergroups`");
+$children = array();
+foreach ($groups as $g) {
+    $children[$g['parent_id']][] = $g['id'];
+}
+foreach ($children as &$c) sort($c);
+$counter = 0;
+function rebuild_groups($parentId, &$counter, $children) {
+    global $children;
+    $left = ++$counter;
+    if (isset($children[$parentId])) {
+        foreach ($children[$parentId] as $childId) {
+            rebuild_groups($childId, $counter, $children);
+        }
+    }
+    $right = ++$counter;
+    db_query("UPDATE `jos_usergroups` SET lft = :l, rgt = :r WHERE id = :id",
+        array(':l' => $left, ':r' => $right, ':id' => $parentId));
+}
+if (isset($children[0])) {
+    foreach ($children[0] as $rootId) {
+        rebuild_groups($rootId, $counter, $children);
+    }
+}
+echo "вложенные множества групп пересчитаны\n";
+
 echo "== Готово ==\n";

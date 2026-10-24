@@ -164,7 +164,7 @@ $cat3 = upsert_category('dekanat-starosta3-stud3', 'Деканат и старо
 echo "== Категории готовы ==\n";
 
 // Теперь статьи для категорий 1, 2, 3.
-function upsert_article($alias, $title, $cat_id, $author_id) {
+function upsert_article($alias, $title, $cat_id, $author_id, $access_level = 1) {
     $existing = db_query("SELECT id FROM `jos_content` WHERE alias = :a", array(':a' => $alias));
     $art_id = $existing ? $existing[0]['id'] : null;
     $text = '<p>' . $title . ' — демонстрационный материал для защиты ЛР7.</p>';
@@ -180,7 +180,7 @@ function upsert_article($alias, $title, $cat_id, $author_id) {
         'publish_up'       => date('Y-m-d H:i:s'),
         'publish_down'     => null,
         'state'            => 1,
-        'access'           => 1,
+        'access'           => $access_level,
         'language'         => '*',
         'metadesc'         => $title,
         'metakey'          => 'город24, лабораторная',
@@ -220,14 +220,18 @@ function upsert_article($alias, $title, $cat_id, $author_id) {
 
 $r_admin = db_query("SELECT id FROM `jos_users` WHERE username = 'admin'");
 $admin_id = $r_admin ? $r_admin[0]['id'] : 1;
+$r_dekan = db_query("SELECT id FROM `jos_users` WHERE username = 'dekan'");
+$dekan_id = $r_dekan ? $r_dekan[0]['id'] : $admin_id;
+$r_star3 = db_query("SELECT id FROM `jos_users` WHERE username = 'starosta3'");
+$starosta3_id = $r_star3 ? $r_star3[0]['id'] : $admin_id;
 
 // Статьи по заданию 2 (3 категории, по одной записи в каждой):
 // Категория 1: запись от декана для старосты группы №1.
-$a1 = upsert_article('dekan-star1', 'Запись декана для старосты группы №1', $cat1, $admin_id);
+$a1 = upsert_article('dekan-star1', 'Запись декана для старосты группы №1', $cat1, $dekan_id, $lvl_star1);
 // Категория 2: запись от декана для старост групп №2 и №3.
-$a2 = upsert_article('dekan-star23', 'Запись декана для старост групп №2 и №3', $cat2, $admin_id);
+$a2 = upsert_article('dekan-star23', 'Запись декана для старост групп №2 и №3', $cat2, $dekan_id, $lvl_star23);
 // Категория 3: две записи — от декана и от старосты №3 для студентов группы №3.
-$a3a = upsert_article('dekan-stud3', 'Материал декана для студентов группы №3', $cat3, $admin_id);
-$a3b = upsert_article('starosta3-stud3', 'Материал старосты №3 для студентов группы №3', $cat3, $admin_id);
+$a3a = upsert_article('dekan-stud3', 'Материал декана для студентов группы №3', $cat3, $dekan_id, $lvl_stud3);
+$a3b = upsert_article('starosta3-stud3', 'Материал старосты №3 для студентов группы №3', $cat3, $starosta3_id, $lvl_stud3);
 
 echo "== Категории и статьи готовы ==\n";
