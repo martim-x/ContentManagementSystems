@@ -72,6 +72,11 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+# Исключение: JS-библиотеки для Drupal лежат в путях с dist/ и нужны в репозитории.
+!lab8/scripts/libraries/**/dist/
+!lab8/scripts/libraries/**/dist/**
+!lab9/scripts/libraries/**/dist/
+!lab9/scripts/libraries/**/dist/**
 downloads/
 eggs/
 .eggs/

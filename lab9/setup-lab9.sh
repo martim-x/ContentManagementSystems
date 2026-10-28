@@ -1,20 +1,36 @@
 #!/bin/sh
-# Развёртывание стенда ЛР9: «Работа с публикациями и меню в Drupal».
+# Развёртывание стенда ЛР9: «Работа с публикациями и меню в Drupal»
+# (labs/Drupal/Drupal_2.pdf). Скрипт идемпотентен.
 set -e
 
 LAB_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$LAB_DIR"
 
 PORT=8106
+J="docker compose exec -T web"
+
+# Готовность сайта: после обновления contrib-модулей PHP-FPM держит старый
+# скомпилированный контейнер, из-за чего страницы отдают 500.
+wait_ready() {
+    i=0
+    while [ "$i" -lt 60 ]; do
+        if [ "$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:$PORT/")" = "200" ]; then
+            return 0
+        fi
+        i=$((i + 1))
+        sleep 2
+    done
+    echo "сайт не поднялся за 120 с"
+    return 1
+}
+
 
 echo "== ЛР9: поднимаем стенд =="
 docker compose up -d --wait
 docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
 
-echo "== Копируем скрипты лабы в контейнер =="
+echo "== Копируем скрипты, ассеты и библиотеки в контейнер =="
 docker compose cp scripts/. web:/opt/drupal/web/scripts/
-
-J="docker compose exec -T web"
 
 echo "== Установка Drupal (если ещё не установлен) =="
 if $J sh -c 'test -f /var/www/html/sites/default/settings.php' 2>/dev/null; then
@@ -25,21 +41,29 @@ else
 fi
 
 echo "== Установка модулей (composer) =="
-$J sh -c 'cd /opt/drupal && composer require drupal/admin_toolbar drupal/pathauto drupal/token drupal/metatag drupal/bootstrap5 drupal/colorbox drupal/taxonomy_menu --no-interaction 2>&1 | tail -3'
+$J sh -c 'cd /opt/drupal && composer require drupal/admin_toolbar drupal/pathauto drupal/token drupal/metatag drupal/bootstrap5 drupal/webform drupal/ctools drupal/colorbox --no-interaction 2>&1 | tail -3'
 
 echo "== Включение модулей и темы =="
-$J sh -c 'cd /opt/drupal && vendor/bin/drush en admin_toolbar pathauto token metatag colorbox taxonomy_menu -y' 2>&1 | tail -6
+$J sh -c 'cd /opt/drupal && vendor/bin/drush en admin_toolbar pathauto token metatag webform ctools colorbox -y' 2>&1 | tail -6
 $J sh -c 'cd /opt/drupal && (vendor/bin/drush theme:enable bootstrap5 -y 2>&1 | tail -2); vendor/bin/drush config:set system.theme default bootstrap5 -y 2>&1 | tail -2'
 
-echo "== Рецепты типов материалов (body field) =="
-$J sh -c 'cd /opt/drupal && vendor/bin/drush recipe:apply core/recipes/page_content_type -y 2>&1 | tail -2'
-$J sh -c 'cd /opt/drupal && vendor/bin/drush recipe:apply core/recipes/article_content_type -y 2>&1 | tail -2'
+echo "== Перезапуск PHP-FPM после обновления модулей =="
+docker compose restart web >/dev/null
+echo "== Ожидание готовности сайта =="
+wait_ready && echo "сайт отвечает 200"
 
-echo "== Конфигурация ЛР8 (база: таксономия, каталог) =="
-$J sh -c 'cd /opt/drupal && vendor/bin/drush scr /opt/drupal/web/scripts/lab8-config.php' 2>&1 | tail -8
+echo "== Библиотеки Colorbox и DOMPurify (лайтбокс галереи) =="
+$J sh -c 'mkdir -p /opt/drupal/web/libraries/colorbox /opt/drupal/web/libraries/DOMPurify'
+docker compose cp scripts/libraries/colorbox/. web:/opt/drupal/web/libraries/colorbox/
+docker compose cp scripts/libraries/DOMPurify/. web:/opt/drupal/web/libraries/DOMPurify/
+$J sh -c 'chmod -R a+r /opt/drupal/web/libraries/colorbox /opt/drupal/web/libraries/DOMPurify && ls /opt/drupal/web/libraries'
 
-echo "== Конфигурация ЛР9 (блоки, статьи, страницы, меню) =="
-$J sh -c 'cd /opt/drupal && vendor/bin/drush scr /opt/drupal/web/scripts/lab9-config.php' 2>&1 | tail -30
+echo "== Конфигурация ЛР8 (база: таксономия, тип «Ноутбук», каталог) =="
+$J sh -c 'cd /opt/drupal && vendor/bin/drush scr /opt/drupal/web/scripts/lab8-config.php' 2>&1 | tail -6
+
+echo "== Конфигурация ЛР9 (блоки, статья, страницы, меню) =="
+$J sh -c 'cd /opt/drupal && vendor/bin/drush scr /opt/drupal/web/scripts/lab9-config.php' 2>&1 | tail -25
+$J sh -c 'cd /opt/drupal && vendor/bin/drush cr >/dev/null 2>&1'
 
 echo "== Проверка =="
 FAIL=0
@@ -52,8 +76,13 @@ check() {
     fi
 }
 check "сайт отвечает" "http://localhost:$PORT/" "Город24"
-check "страница входа" "http://localhost:$PORT/user/login" "Log in"
-check "карточка ноутбука" "http://localhost:$PORT/node/1" "Lenovo IdeaPad"
+check "два блока в боковой колонке" "http://localhost:$PORT/" "Блок 2"
+check "страница «История фирмы»" "http://localhost:$PORT/stranicy/istoriya-firmy-lenovo" "История фирмы Lenovo"
+check "галерея: миниатюры" "http://localhost:$PORT/stranicy/galereya-noutbukov-lenovo" "gallery/"
+check "галерея: подключён Colorbox" "http://localhost:$PORT/stranicy/galereya-noutbukov-lenovo" "colorbox"
+check "прайс-лист: таблица" "http://localhost:$PORT/stranicy/prays-list-noutbukov-lenovo" "<table"
+check "статья" "http://localhost:$PORT/novosti/obzor-noutbukov-lenovo-2026-goda" "Обзор ноутбуков Lenovo"
+check "дополнительное меню в футере" "http://localhost:$PORT/" "Дополнительное меню"
 if [ "$FAIL" = "0" ]; then
     echo "ВСЕ ПРОВЕРКИ ПРОЙДЕНЫ"
 else
