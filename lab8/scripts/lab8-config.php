@@ -1,6 +1,6 @@
 <?php
 /**
- * Конфигурация ЛР8 «Знакомство с Drupal».
+ * Конфигурация ЛР8 «Знакомство с Drupal» — городской новостной портал «Город24».
  *
  * Скрипт идемпотентен: повторный запуск не создаёт дубликатов.
  * Запуск: drush php:script /opt/drupal/web/scripts/lab8-config.php
@@ -10,7 +10,10 @@
  *  3.3 — модули Admin Toolbar, Pathauto, Token, Metatag, Webform, yoast_seo;
  *  3.4 — алиасы Pathauto (+ ctools, Token), метатеги Metatag + SEO-анализ yoast_seo;
  *  3.5 — словарь «Lenovo», тип материала «Ноутбук» с полем термина и фото,
- *        каталог из 10 ноутбуков.
+ *        каталог из 10 ноутбуков (раздел портала «Техника»).
+ *
+ * Тематика сайта: городской новостной портал. Лента новостей — главная страница,
+ * каталог ноутбуков — отдельный раздел (требование задания 5).
  */
 
 use Drupal\block_content\Entity\BlockContent;
@@ -23,6 +26,8 @@ use Drupal\node\Entity\NodeType;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\views\Entity\View;
 use Drupal\webform\Entity\Webform;
 use Drupal\Core\Entity\EntityStorageInterface;
 
@@ -60,6 +65,59 @@ function lab8_file(string $rel, string $target_dir): int {
   return (int) $file->id();
 }
 
+/** Создаёт словарь таксономии, если его нет. */
+function lab8_vocabulary(string $vid, string $name, string $description): void {
+  if (!Vocabulary::load($vid)) {
+    Vocabulary::create(['vid' => $vid, 'name' => $name, 'description' => $description])->save();
+    echo "словарь «{$name}»: создан\n";
+  }
+}
+
+/** Создаёт термин словаря и возвращает его id. */
+function lab8_term(string $vid, string $name): int {
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $found = $storage->loadByProperties(['name' => $name, 'vid' => $vid]);
+  $term = reset($found);
+  if (!$term) {
+    $term = Term::create(['vid' => $vid, 'name' => $name]);
+    $term->save();
+    echo "  термин «{$name}»: создан\n";
+  }
+  return (int) $term->id();
+}
+
+/** Создаёт пункт меню, если такого пункта с таким заголовком ещё нет. */
+function lab8_menu(string $menu, string $title, string $uri, string $parent = '', int $weight = 0): MenuLinkContent {
+  $storage = \Drupal::entityTypeManager()->getStorage('menu_link_content');
+  $found = $storage->loadByProperties(['menu_name' => $menu, 'title' => $title]);
+  $link = reset($found) ?: MenuLinkContent::create(['menu_name' => $menu, 'title' => $title]);
+  $link->set('link', ['uri' => $uri]);
+  $link->set('weight', $weight);
+  if ($parent !== '') {
+    $link->set('parent', $parent);
+  }
+  $link->save();
+  return $link;
+}
+
+/** Создаёт стиль изображения с кропом. */
+function lab8_image_style(string $name, string $label, int $width, int $height): void {
+  if (!ImageStyle::load($name)) {
+    ImageStyle::create([
+      'name' => $name,
+      'label' => $label,
+      'effects' => [
+        'image_scale_and_crop' => [
+          'id' => 'image_scale_and_crop',
+          'weight' => 0,
+          'data' => ['width' => $width, 'height' => $height],
+        ],
+      ],
+    ])->save();
+    echo "стиль изображения {$name}: создан\n";
+  }
+}
+
 // ---------------------------------------------------------------------------
 // 1. Тема, логотип, фавикон, название, слоган (задание 2)
 // ---------------------------------------------------------------------------
@@ -88,65 +146,212 @@ echo "тема {$theme}: логотип {$logo_url}, фавикон {$favicon_ur
 
 \Drupal::configFactory()->getEditable('system.site')
   ->set('name', 'Город24')
-  ->set('slogan', 'Город24 — каталог ноутбуков Lenovo')
+  ->set('slogan', 'Новости Минска: город, транспорт, культура')
   ->save();
 echo "название сайта и слоган заданы\n";
 
-// Стиль изображения для карточек каталога.
-if (!ImageStyle::load('noutbuk_card')) {
-  ImageStyle::create([
-    'name' => 'noutbuk_card',
-    'label' => 'Карточка ноутбука 400×250',
-    'effects' => [
-      'image_scale_and_crop' => [
-        'id' => 'image_scale_and_crop',
-        'weight' => 0,
-        'data' => ['width' => 400, 'height' => 250],
-      ],
-    ],
-  ])->save();
-  echo "стиль изображения noutbuk_card: создан\n";
-}
-if (!ImageStyle::load('noutbuk_teaser')) {
-  ImageStyle::create([
-    'name' => 'noutbuk_teaser',
-    'label' => 'Миниатюра каталога 240×150',
-    'effects' => [
-      'image_scale_and_crop' => [
-        'id' => 'image_scale_and_crop',
-        'weight' => 0,
-        'data' => ['width' => 240, 'height' => 150],
-      ],
-    ],
-  ])->save();
-  echo "стиль изображения noutbuk_teaser: создан\n";
-}
+// Стили изображений: карточки каталога и иллюстрации новостей.
+lab8_image_style('noutbuk_card', 'Карточка ноутбука 400×250', 400, 250);
+lab8_image_style('noutbuk_teaser', 'Миниатюра каталога 240×150', 240, 150);
+lab8_image_style('news_teaser', 'Иллюстрация новости в ленте 360×220', 360, 220);
+lab8_image_style('news_full', 'Иллюстрация новости на странице 760×430', 760, 430);
 
 // ---------------------------------------------------------------------------
-// 2. Таксономия «Lenovo» и тип материала «Ноутбук» (задание 5)
+// 2. Таксономия: рубрики новостей и серии ноутбуков
 // ---------------------------------------------------------------------------
-if (!Vocabulary::load('lenovo')) {
-  Vocabulary::create([
-    'vid' => 'lenovo',
-    'name' => 'Lenovo',
-    'description' => 'Серии ноутбуков Lenovo',
-  ])->save();
-  echo "словарь «Lenovo»: создан\n";
+lab8_vocabulary('rubriki', 'Рубрики новостей', 'Рубрики городского портала');
+$rubrics = ['Город', 'Транспорт', 'Происшествия', 'Культура', 'Спорт', 'Технологии'];
+$rubric_ids = [];
+foreach ($rubrics as $name) {
+  $rubric_ids[$name] = lab8_term('rubriki', $name);
+}
+// Термины прошлых прогонов, которых больше нет в списке рубрик.
+foreach ($etm->getStorage('taxonomy_term')->loadByProperties(['vid' => 'rubriki']) as $term) {
+  if (!in_array($term->getName(), $rubrics, TRUE)) {
+    $term->delete();
+    echo "  устаревшая рубрика «{$term->getName()}»: удалена\n";
+  }
 }
 
+lab8_vocabulary('lenovo', 'Lenovo', 'Серии ноутбуков Lenovo');
 $series = ['серия IdeaPad', 'серия ThinkPad', 'серия Yoga', 'серия V'];
 $term_ids = [];
 foreach ($series as $name) {
-  $found = $etm->getStorage('taxonomy_term')->loadByProperties(['name' => $name, 'vid' => 'lenovo']);
-  $term = reset($found);
-  if (!$term) {
-    $term = Term::create(['vid' => 'lenovo', 'name' => $name]);
-    $term->save();
-    echo "  термин «{$name}»: создан\n";
-  }
-  $term_ids[$name] = (int) $term->id();
+  $term_ids[$name] = lab8_term('lenovo', $name);
 }
 
+// ---------------------------------------------------------------------------
+// 3. Тип материала «Новость» — основа ленты портала
+// ---------------------------------------------------------------------------
+if (!NodeType::load('news')) {
+  NodeType::create([
+    'type' => 'news',
+    'name' => 'Новость',
+    'description' => 'Новость городского портала: лид, рубрика, иллюстрация',
+    'display_submitted' => FALSE,
+  ])->save();
+  echo "тип материала «Новость»: создан\n";
+}
+else {
+  $news_type = NodeType::load('news');
+  if ($news_type->displaySubmitted()) {
+    $news_type->set('display_submitted', FALSE)->save();
+  }
+}
+
+if (!FieldStorageConfig::loadByName('node', 'body')) {
+  FieldStorageConfig::create([
+    'field_name' => 'body',
+    'entity_type' => 'node',
+    'type' => 'text_with_summary',
+  ])->save();
+  echo "  хранилище поля body: создано\n";
+}
+
+// Поля новости: лид, рубрика, иллюстрация.
+$news_fields = [
+  'body' => [
+    'type' => 'text_with_summary',
+    'label' => 'Текст новости',
+    'required' => TRUE,
+  ],
+  'field_lead' => [
+    'type' => 'string',
+    'label' => 'Лид',
+    'required' => TRUE,
+    'storage' => ['settings' => ['max_length' => 255]],
+  ],
+  'field_rubric' => [
+    'type' => 'entity_reference',
+    'label' => 'Рубрика',
+    'required' => TRUE,
+    'storage' => ['settings' => ['target_type' => 'taxonomy_term']],
+    'settings' => ['handler_settings' => ['target_bundles' => ['rubriki' => 'rubriki']]],
+  ],
+  'field_image' => [
+    'type' => 'image',
+    'label' => 'Иллюстрация',
+    'required' => TRUE,
+    'storage' => ['settings' => ['uri_scheme' => 'public']],
+    'settings' => ['file_extensions' => 'png jpg jpeg', 'alt_field' => TRUE, 'alt_field_required' => FALSE],
+  ],
+];
+foreach ($news_fields as $field_name => $spec) {
+  if ($field_name !== 'body' && !FieldStorageConfig::loadByName('node', $field_name)) {
+    FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'node',
+      'type' => $spec['type'],
+      'cardinality' => 1,
+    ] + ($spec['storage'] ?? []))->save();
+  }
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  if (!FieldConfig::loadByName('node', 'news', $field_name)) {
+    FieldConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'node',
+      'bundle' => 'news',
+      'label' => $spec['label'],
+      'required' => $spec['required'],
+    ] + ($spec['settings'] ?? []))->save();
+    echo "  поле «{$spec['label']}» у типа «Новость»: создано\n";
+  }
+}
+
+// Форма и вывод новости.
+$display_repo = \Drupal::service('entity_display.repository');
+$news_form = $display_repo->getFormDisplay('node', 'news', 'default');
+$news_form
+  ->setComponent('field_lead', ['type' => 'string_textfield', 'weight' => -5])
+  ->setComponent('body', ['type' => 'text_textarea_with_summary', 'weight' => 0])
+  ->setComponent('field_rubric', ['type' => 'options_select', 'weight' => 1])
+  ->setComponent('field_image', ['type' => 'image_image', 'weight' => 2])
+  ->save();
+
+$news_view = $display_repo->getViewDisplay('node', 'news', 'default');
+$news_view
+  ->setComponent('field_image', [
+    'type' => 'image',
+    'label' => 'hidden',
+    'weight' => 0,
+    'settings' => ['image_style' => 'news_full', 'image_link' => ''],
+  ])
+  ->setComponent('field_lead', ['type' => 'string', 'label' => 'hidden', 'weight' => 1])
+  ->setComponent('field_rubric', ['type' => 'entity_reference_label', 'label' => 'inline', 'weight' => 2])
+  ->setComponent('body', ['type' => 'text_default', 'label' => 'hidden', 'weight' => 3])
+  ->save();
+
+$news_teaser = $display_repo->getViewDisplay('node', 'news', 'teaser');
+$news_teaser
+  ->setComponent('field_image', [
+    'type' => 'image',
+    'label' => 'hidden',
+    'weight' => 0,
+    'settings' => ['image_style' => 'news_teaser', 'image_link' => 'content'],
+  ])
+  ->setComponent('field_lead', ['type' => 'string', 'label' => 'hidden', 'weight' => 1])
+  ->setComponent('field_rubric', ['type' => 'entity_reference_label', 'label' => 'inline', 'weight' => 2])
+  ->setComponent('body', ['type' => 'text_summary_or_trimmed', 'label' => 'hidden', 'weight' => 3])
+  ->save();
+
+// Метатеги и SEO-анализ у новости (задание 4).
+if (\Drupal::moduleHandler()->moduleExists('metatag')) {
+  if (!FieldStorageConfig::loadByName('node', 'field_metatag')) {
+    FieldStorageConfig::create([
+      'field_name' => 'field_metatag',
+      'entity_type' => 'node',
+      'type' => 'metatag',
+      'cardinality' => 1,
+    ])->save();
+  }
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  if (!FieldConfig::loadByName('node', 'news', 'field_metatag')) {
+    FieldConfig::create([
+      'field_name' => 'field_metatag',
+      'entity_type' => 'node',
+      'bundle' => 'news',
+      'label' => 'Метатеги',
+      'required' => FALSE,
+    ])->save();
+  }
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  $news_form->setComponent('field_metatag', [
+    'type' => 'metatag_firehose',
+    'weight' => 20,
+    'settings' => ['sidebar' => TRUE, 'use_details' => TRUE],
+  ]);
+}
+if (\Drupal::moduleHandler()->moduleExists('yoast_seo')) {
+  if (!FieldStorageConfig::loadByName('node', 'field_yoast_seo')) {
+    FieldStorageConfig::create([
+      'field_name' => 'field_yoast_seo',
+      'entity_type' => 'node',
+      'type' => 'yoast_seo',
+      'cardinality' => 1,
+    ])->save();
+  }
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  if (!FieldConfig::loadByName('node', 'news', 'field_yoast_seo')) {
+    FieldConfig::create([
+      'field_name' => 'field_yoast_seo',
+      'entity_type' => 'node',
+      'bundle' => 'news',
+      'label' => 'SEO-анализ',
+      'required' => FALSE,
+    ])->save();
+  }
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  $news_form->setComponent('field_yoast_seo', [
+    'type' => 'yoast_seo_widget',
+    'weight' => 21,
+    'settings' => ['edit_title' => TRUE, 'edit_description' => TRUE],
+  ]);
+}
+$news_form->save();
+
+// ---------------------------------------------------------------------------
+// 4. Тип материала «Ноутбук» — раздел портала «Техника» (задание 5)
+// ---------------------------------------------------------------------------
 if (!NodeType::load('noutbuk')) {
   NodeType::create([
     'type' => 'noutbuk',
@@ -163,10 +368,9 @@ else {
   }
 }
 
-// Удаляем термины прошлых прогонов, которых больше нет в словаре и на которые
-// не ссылается ни один материал: иначе они попадут в меню «Каталог» в ЛР9.
+// Термины серий, на которые не ссылается ни один материал, не нужны.
 $used = [];
-foreach (\Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['type' => 'noutbuk']) as $n) {
+foreach ($etm->getStorage('node')->loadByProperties(['type' => 'noutbuk']) as $n) {
   foreach ($n->get('field_series')->getValue() as $v) {
     $used[(int) $v['target_id']] = TRUE;
   }
@@ -178,16 +382,6 @@ foreach ($etm->getStorage('taxonomy_term')->loadByProperties(['vid' => 'lenovo']
   }
 }
 
-// Основное поле body: в Drupal 11 это обычное настраиваемое поле, а тип материала
-// создан кодом — значит и хранилище, и привязку к типу надо создать самим.
-if (!FieldStorageConfig::loadByName('node', 'body')) {
-  FieldStorageConfig::create([
-    'field_name' => 'body',
-    'entity_type' => 'node',
-    'type' => 'text_with_summary',
-  ])->save();
-  echo "  хранилище поля body: создано\n";
-}
 if (!FieldConfig::loadByName('node', 'noutbuk', 'body')) {
   FieldConfig::create([
     'field_name' => 'body',
@@ -271,7 +465,6 @@ if (!FieldConfig::loadByName('node', 'noutbuk', 'field_model')) {
 }
 
 // Форма и вывод: без явных компонентов добавленные кодом поля не отображаются.
-$display_repo = \Drupal::service('entity_display.repository');
 $form_display = $display_repo->getFormDisplay('node', 'noutbuk', 'default');
 $form_display
   ->setComponent('body', ['type' => 'text_textarea_with_summary', 'weight' => 0])
@@ -306,20 +499,7 @@ $teaser_display
   ->setComponent('body', ['type' => 'text_summary_or_trimmed', 'label' => 'hidden', 'weight' => 3])
   ->save();
 
-// Метатеги и SEO-анализ на форме материала: поля-виджеты надо добавить в отображение.
-// Поле metatag создаётся модулем Metatag, поле Yoast SEO — обычная сущность.
 if (\Drupal::moduleHandler()->moduleExists('metatag')) {
-  // Внимание: имя 'metatag' занято вычисляемым базовым полем модуля, поэтому
-  // редактируемое поле называется field_metatag (так же его создаёт Field UI.
-  if (!FieldStorageConfig::loadByName('node', 'field_metatag')) {
-    FieldStorageConfig::create([
-      'field_name' => 'field_metatag',
-      'entity_type' => 'node',
-      'type' => 'metatag',
-      'cardinality' => 1,
-    ])->save();
-    echo "  поле «Метатеги» (Metatag): создано\n";
-  }
   \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
   if (!FieldConfig::loadByName('node', 'noutbuk', 'field_metatag')) {
     FieldConfig::create([
@@ -338,16 +518,6 @@ if (\Drupal::moduleHandler()->moduleExists('metatag')) {
   ]);
 }
 if (\Drupal::moduleHandler()->moduleExists('yoast_seo')) {
-  if (!FieldStorageConfig::loadByName('node', 'field_yoast_seo')) {
-    FieldStorageConfig::create([
-      'field_name' => 'field_yoast_seo',
-      'entity_type' => 'node',
-      'type' => 'yoast_seo',
-      'cardinality' => 1,
-    ])->save();
-    echo "  поле Yoast SEO (Real-time SEO): создано\n";
-  }
-  // Определения полей кешируются: без сброса FieldConfig::create не видит хранилище.
   \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
   if (!FieldConfig::loadByName('node', 'noutbuk', 'field_yoast_seo')) {
     FieldConfig::create([
@@ -368,11 +538,164 @@ if (\Drupal::moduleHandler()->moduleExists('yoast_seo')) {
 $form_display->save();
 
 // ---------------------------------------------------------------------------
-// 3. Каталог из 10 ноутбуков с фотографиями (задание 5)
+// 5. Лента новостей портала (12 материалов в шести рубриках)
 // ---------------------------------------------------------------------------
 // Свежие определения полей: без сброса set() на только что созданных полях падает.
 \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
 \Drupal::service('entity_type.bundle.info')->clearCachedBundles();
+
+$news = [
+  [
+    'title' => 'Минск переводит ещё 40 автобусов на электропривод',
+    'rubric' => 'Транспорт',
+    'image' => 'news04.jpg',
+    'lead' => 'Обновление парка завершат до конца года: новые машины выйдут на маршруты, связывающие спальные районы с центром.',
+    'body' => 'Городской парк пополнится 40 электробусами до конца года. Машины распределят по маршрутам, которые проходят через центр и связывают спальные районы с вокзалом. Зарядные станции установят на конечных остановках, время подзарядки — около 20 минут. По расчётам транспортного управления, новая техника снизит расходы на обслуживание на четверть.',
+  ],
+  [
+    'title' => 'На Свислочи открыли сезон лодочных прогулок',
+    'rubric' => 'Город',
+    'image' => 'news10.jpg',
+    'lead' => 'Прокат лодок и катамаранов работает ежедневно с 10:00 до 21:00, на набережной оборудовали три новых причала.',
+    'body' => 'Сезон прогулок по Свислочи открыт: на набережной работают три причала, где можно взять лодку или катамаран. Прокат идёт ежедневно с 10:00 до 21:00, для школьников действует скидка. Спасатели напоминают о жилетах и просят не выходить на воду в ветреную погоду.',
+  ],
+  [
+    'title' => 'Национальная библиотека продлила вечерние часы',
+    'rubric' => 'Культура',
+    'image' => 'news01.jpg',
+    'lead' => 'С октября читальные залы открыты до 22:00, а по субботам проходит бесплатная экскурсия по смотровой площадке.',
+    'body' => 'С октября Национальная библиотека работает до 22:00 — продление связано с нагрузкой в сессию. По субботам в 15:00 проходит бесплатная экскурсия, включая смотровую площадку. Запись на экскурсию открыта на сайте библиотеки, группы до 25 человек.',
+  ],
+  [
+    'title' => 'В Верхнем городе отреставрировали фасады трёх кварталов',
+    'rubric' => 'Город',
+    'image' => 'news12.jpg',
+    'lead' => 'Реставраторы вернули исторический цвет фасадам и восстановили лепнину, работы шли полтора года.',
+    'body' => 'В Верхнем городе завершена реставрация фасадов трёх кварталов: восстановлена лепнина, возвращён исторический цвет, отремонтированы балконы. Работы шли полтора года по архивным фотографиям. Пешеходную часть улиц замостили заново, сохранив рисунок исторической мостовой.',
+  ],
+  [
+    'title' => 'БГУ открыл набор на курсы анализа данных',
+    'rubric' => 'Технологии',
+    'image' => 'news02.jpg',
+    'lead' => 'Программа рассчитана на 4 месяца, занятия проходят вечером, часть мест — бюджетная для студентов.',
+    'body' => 'Факультет прикладной математики открыл набор на курсы анализа данных. Программа длится четыре месяца: Python, статистика, визуализация и работа с большими таблицами. Занятия вечером два раза в неделю, часть мест бюджетная для студентов университета. Заявки принимают до конца месяца.',
+  ],
+  [
+    'title' => 'В парке у библиотеки высадили 120 деревьев',
+    'rubric' => 'Город',
+    'image' => 'news08.jpg',
+    'lead' => 'Акция собрала больше трёхсот участников: липы и клёны высаживали сотрудники парка вместе с горожанами.',
+    'body' => 'В парке у Национальной библиотеки высадили 120 лип и клёнов. В акции участвовали более трёхсот человек — сотрудники парка, студенты и местные жители. Молодые деревья закрепили на растяжках и обеспечили автополив на первый сезон, уход продолжится два года.',
+  ],
+  [
+    'title' => 'Проспект Рокоссовского: новая схема движения',
+    'rubric' => 'Транспорт',
+    'image' => 'news09.jpg',
+    'lead' => 'Выделенную полосу для общественного транспорта продлили до кольцевой, парковку у остановок убрали.',
+    'body' => 'На проспекте Рокоссовского изменилась организация движения: выделенная полоса для автобусов продлена до кольцевой дороги, на трёх перекрёстках добавлен поворот направо с отдельной секцией. Парковку у остановок убрали, чтобы не мешать общественному транспорту. Схема действует с начала недели, первые дни на месте дежурят инспекторы.',
+  ],
+  [
+    'title' => 'Городской театр готовит премьеру по документальным историям',
+    'rubric' => 'Культура',
+    'image' => 'news03.jpg',
+    'lead' => 'В основу спектакля легли интервью с жителями минских дворов, премьера назначена на середину ноября.',
+    'body' => 'Городской театр выпускает премьеру по документальным историям: в основу легли интервью с жителями минских дворов, записанные за полгода. В постановке заняты восемь актёров и хор, сценография повторяет планировку типовой хрущёвки. Премьера — в середине ноября, билеты уже в продаже.',
+  ],
+  [
+    'title' => 'Коммунальщики устранили прорыв трубы на Немиге',
+    'rubric' => 'Происшествия',
+    'image' => 'news06.jpg',
+    'lead' => 'Авария на теплотрассе оставила без горячей воды два квартала, движение по улице восстановили вечером.',
+    'body' => 'Утром на Немиге произошёл прорыв трубы горячего водоснабжения: без горячей воды остались два квартала, движение по одной полосе перекрыли. Ремонтные бригады заменили участок трубопровода длиной 12 метров. К вечеру подача воды восстановлена, движение открыто, причиной назвали износ трубы.',
+  ],
+  [
+    'title' => 'Минские школьники собрали робота-курьера для школьной столовой',
+    'rubric' => 'Технологии',
+    'image' => 'news07.jpg',
+    'lead' => 'Проект кружка робототехники: аппарат развозит подносы по залу и объезжает препятствия по разметке.',
+    'body' => 'Ученики инженерного класса собрали робота-курьера для школьной столовой. Аппарат весом 18 кг развозит подносы по залу, ориентируется по нанесённой разметке и объезжает препятствия с помощью ультразвуковых датчиков. Проект занял второе место на городском конкурсе технического творчества.',
+  ],
+  [
+    'title' => 'На Немиге заливают каток',
+    'rubric' => 'Спорт',
+    'image' => 'news11.jpg',
+    'lead' => 'Ледовую площадку обещают открыть к концу месяца, прокат коньков будет бесплатным для школьников.',
+    'body' => 'На Немиге начали заливать открытый каток: площадку готовят к концу месяца, рядом обустраивают тёплую раздевалку и пункт проката. Для школьников прокат коньков будет бесплатным по будням до 16:00. Вечером планируют массовые катания с музыкой и работу инструкторов.',
+  ],
+  [
+    'title' => 'Старый город: пешеходные экскурсии по выходным',
+    'rubric' => 'Культура',
+    'image' => 'news05.jpg',
+    'lead' => 'Двухчасовой маршрут проходит по дворам Троицкого предместья, экскурсии ведут городские гиды бесплатно.',
+    'body' => 'По выходным в Старом городе проходят бесплатные пешеходные экскурсии: двухчасовой маршрут начинается у ратуши и идёт через дворы Троицкого предместья. Группы собираются в 11:00 и 15:00, записываться заранее не нужно. Гиды рассказывают о послевоенной застройке и о том, как менялся облик кварталов.',
+  ],
+  [
+    'title' => 'Свислочь очистили после паводка: собрали 12 тонн мусора',
+    'rubric' => 'Происшествия',
+    'image' => 'news11.jpg',
+    'lead' => 'Коммунальные службы работали две недели, на береговой линии восстановили газоны и дорожки.',
+    'body' => 'После весеннего паводка с берегов Свислочи собрали 12 тонн мусора и принесённых течением веток. Коммунальные службы работали две недели: чистили русло у мостов, восстанавливали газоны и пешеходные дорожки. Часть набережной открыли заново, купальный сезон начнётся по графику.',
+  ],
+];
+
+$news_titles = [];
+foreach ($news as $i => $item) {
+  $news_titles[] = $item['title'];
+  $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $item['title']));
+  $image_id = lab8_file('news/' . $item['image'], 'news');
+  // Внутренняя и внешняя ссылки в тексте — этого требует SEO-анализ и логика портала.
+  $next = $news[($i + 1) % count($news)];
+  $next_slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $next['title']));
+  $body_html = '<p>' . $item['body'] . '</p>'
+    . '<p>Читайте также: <a href="/novosti/' . $next_slug . '">' . $next['title'] . '</a>. '
+    . 'Источник городских данных: <a href="https://minsk.gov.by/">Минский городской исполнительный комитет</a>.</p>';
+
+  $found = $etm->getStorage('node')->loadByProperties(['type' => 'news', 'title' => $item['title']]);
+  $node = reset($found) ?: Node::create(['type' => 'news', 'title' => $item['title']]);
+  $is_new = $node->isNew();
+  $node->set('body', [
+    'value' => $body_html,
+    'format' => 'basic_html',
+    'summary' => $item['lead'],
+  ]);
+  $node->set('field_lead', $item['lead']);
+  $node->set('field_rubric', ['target_id' => $rubric_ids[$item['rubric']]]);
+  $node->set('field_image', ['target_id' => $image_id, 'alt' => $item['title']]);
+  $node->set('uid', 1);
+  $node->set('status', 1);
+  // Лента на главной — это промотированные новости.
+  $node->set('promote', 1);
+  $node->set('sticky', 0);
+  if ($node->hasField('field_metatag')) {
+    $node->set('field_metatag', [
+      'value' => [
+        'title' => $item['title'] . ' — Город24',
+        'description' => mb_substr($item['lead'], 0, 160),
+      ],
+    ]);
+  }
+  if ($node->hasField('field_yoast_seo')) {
+    $node->set('field_yoast_seo', [
+      'focus_keyword' => $item['title'],
+      'title' => $item['title'] . ' — новости Город24',
+      'description' => mb_substr($item['lead'], 0, 160),
+    ]);
+  }
+  $node->save();
+  echo ($is_new ? '  новость добавлена: ' : '  новость обновлена: ') . $node->getTitle() . " (node/{$node->id()})\n";
+}
+
+// Новости прошлых прогонов, которых нет в списке, удаляем.
+foreach ($etm->getStorage('node')->loadByProperties(['type' => 'news']) as $node) {
+  if (!in_array($node->getTitle(), $news_titles, TRUE)) {
+    $node->delete();
+    echo '  устаревшая новость удалена: ' . $node->getTitle() . "\n";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 6. Каталог из 10 ноутбуков — раздел «Техника» (задание 5)
+// ---------------------------------------------------------------------------
 $catalog = [
   ['photo' => '01_lenovo_ideapad_flex14.jpg', 'title' => 'Lenovo IdeaPad Flex 14', 'model' => 'Flex 14 (82B8)', 'series' => 'серия IdeaPad',
    'body' => 'Трансформер с поворотным экраном 14″ Full HD и сенсорным вводом. Процессор Intel Core i5-10210U, 8 ГБ ОЗУ, SSD 256 ГБ. Вес 1,5 кг.'],
@@ -416,14 +739,11 @@ foreach ($catalog as $i => $item) {
   $node->set('field_model', $item['model']);
   $node->set('field_series', ['target_id' => $term_ids[$item['series']]]);
   $node->set('field_photo', ['target_id' => $photo_id, 'alt' => $item['title']]);
-  $node->set('path', ['alias' => '/noutbuki/' . $slug]);
   $node->set('uid', 1);
   $node->set('status', 1);
-  $node->set('promote', 1);
-  // Метатеги и SEO-данные конкретной карточки — чтобы на форме были заполнены
-  // поля Metatag и Yoast, а SEO-анализ считал оценку (демонстрация задания 4).
+  // Каталог — отдельный раздел, в ленту новостей он не попадает.
+  $node->set('promote', 0);
   if ($node->hasField('field_metatag')) {
-    // Схема поля: единственная колонка value, внутри — карта «тег → значение».
     $node->set('field_metatag', [
       'value' => [
         'title' => $item['title'] . ' — каталог Город24',
@@ -442,8 +762,7 @@ foreach ($catalog as $i => $item) {
   echo ($is_new ? '  ноутбук добавлен: ' : '  ноутбук обновлён: ') . $node->getTitle() . " (node/{$node->id()})\n";
 }
 
-// Материалы прошлых прогонов, которых нет в каталоге (например «Lenovo IdeaPad серия N №1»),
-// удаляем: иначе в каталоге остаются пустые карточки без фото.
+// Материалы прошлых прогонов, которых нет в каталоге, удаляем.
 $titles = array_column($catalog, 'title');
 foreach ($etm->getStorage('node')->loadByProperties(['type' => 'noutbuk']) as $node) {
   if (!in_array($node->getTitle(), $titles, TRUE)) {
@@ -452,13 +771,94 @@ foreach ($etm->getStorage('node')->loadByProperties(['type' => 'noutbuk']) as $n
   }
 }
 
-// Главная страница — каталог (тизеры с фотографиями).
+// Главная страница — лента новостей (промотированные материалы).
 \Drupal::configFactory()->getEditable('system.site')->set('page.front', '/node')->save();
 
 // ---------------------------------------------------------------------------
-// 4. Pathauto: паттерны алиасов (задание 4)
+// 7. Views: страница раздела «Техника» со всеми 10 карточками
+// ---------------------------------------------------------------------------
+$view = View::load('katalog');
+if (!$view) {
+  $view = View::create([
+    'id' => 'katalog',
+    'label' => 'Каталог ноутбуков',
+    'base_table' => 'node_field_data',
+    'base_field' => 'nid',
+    'status' => TRUE,
+  ]);
+}
+$view->set('description', 'Каталог ноутбуков Lenovo — раздел портала «Техника».');
+$default_options = [
+  'title' => 'Каталог ноутбуков Lenovo',
+  'pager' => ['type' => 'full', 'options' => ['items_per_page' => 10]],
+  'exposed_form' => ['type' => 'basic', 'options' => []],
+  'style' => ['type' => 'default', 'options' => ['grouping' => [], 'row_class' => '', 'default_row_class' => TRUE]],
+  'row' => ['type' => 'entity:node', 'options' => ['view_mode' => 'teaser', 'relationship' => 'none']],
+  'access' => ['type' => 'perm', 'perm' => 'access content'],
+  'sorts' => [
+    'title' => [
+      'id' => 'title',
+      'table' => 'node_field_data',
+      'field' => 'title',
+      'entity_type' => 'node',
+      'entity_field' => 'title',
+      'plugin_id' => 'standard',
+      'order' => 'ASC',
+      'expose' => ['operator' => ''],
+    ],
+  ],
+  'filters' => [
+    'status' => [
+      'id' => 'status',
+      'table' => 'node_field_data',
+      'field' => 'status',
+      'entity_type' => 'node',
+      'entity_field' => 'status',
+      'plugin_id' => 'boolean',
+      'value' => '1',
+      'group' => 1,
+      'expose' => ['operator' => ''],
+    ],
+    'type' => [
+      'id' => 'type',
+      'table' => 'node_field_data',
+      'field' => 'type',
+      'entity_type' => 'node',
+      'entity_field' => 'type',
+      'plugin_id' => 'bundle',
+      'value' => ['noutbuk' => 'noutbuk'],
+      'group' => 1,
+      'expose' => ['operator' => ''],
+    ],
+  ],
+];
+$view->set('display', [
+  'default' => [
+    'display_plugin' => 'default',
+    'id' => 'default',
+    'display_title' => 'Default',
+    'position' => 0,
+    'display_options' => $default_options,
+  ],
+  'page_1' => [
+    'display_plugin' => 'page',
+    'id' => 'page_1',
+    'display_title' => 'Страница каталога',
+    'position' => 1,
+    'display_options' => [
+      'path' => 'noutbuki',
+      'menu' => ['type' => 'none'],
+    ],
+  ],
+]);
+$view->save();
+echo "представление katalog: страница /noutbuki (10 карточек)\n";
+
+// ---------------------------------------------------------------------------
+// 8. Pathauto: паттерны алиасов (задание 4)
 // ---------------------------------------------------------------------------
 $patterns = [
+  'news' => ['label' => 'Новости', 'bundle' => 'news', 'pattern' => 'novosti/[node:title]'],
   'noutbuk' => ['label' => 'Ноутбуки', 'bundle' => 'noutbuk', 'pattern' => 'noutbuki/[node:title]'],
   'page' => ['label' => 'Страницы', 'bundle' => 'page', 'pattern' => 'stranicy/[node:title]'],
   'article' => ['label' => 'Статьи', 'bundle' => 'article', 'pattern' => 'novosti/[node:title]'],
@@ -488,15 +888,51 @@ foreach ($patterns as $id => $p) {
   }
 }
 
+// Алиас рубрики: /rubrika/<название>.
+$rubric_pattern = PathautoPattern::load('rubrika');
+if (!$rubric_pattern) {
+  PathautoPattern::create([
+    'id' => 'rubrika',
+    'label' => 'Рубрики',
+    'type' => 'canonical_entities:taxonomy_term',
+    'pattern' => 'rubrika/[term:name]',
+    'selection_criteria' => [
+      'entity_bundle:taxonomy_term' => [
+        'id' => 'entity_bundle:taxonomy_term',
+        'bundles' => ['rubriki' => 'rubriki'],
+        'negate' => FALSE,
+        'context_mapping' => ['taxonomy_term' => 'taxonomy_term'],
+      ],
+    ],
+    'selection_logic' => 'and',
+    'weight' => 0,
+  ])->save();
+  echo "паттерн Pathauto «Рубрики»: rubrika/[term:name]\n";
+}
+
 // Пересчитать алиасы у существующих материалов (идемпотентно).
+// Алиасы, выставленные вручную (в том числе прошлыми прогонами), Pathauto не
+// трогает, поэтому сначала удаляем их, потом генератор строит алиас из шаблона.
 $generator = \Drupal::service('pathauto.generator');
+$alias_storage = $etm->getStorage('path_alias');
 foreach ($etm->getStorage('node')->loadMultiple() as $node) {
+  // Флаг pathauto: если материал сохранялся с ручным алиасом, Pathauto его
+  // пропускает — возвращаем состояние «алиас генерировать».
+  if ($node->hasField('path')) {
+    $node->set('path', ['pathauto' => 1]);
+  }
+  foreach ($alias_storage->loadByProperties(['path' => '/node/' . $node->id()]) as $alias) {
+    $alias->delete();
+  }
   $generator->updateEntityAlias($node, 'bulkupdate');
+}
+foreach ($etm->getStorage('taxonomy_term')->loadMultiple() as $term) {
+  $generator->updateEntityAlias($term, 'bulkupdate');
 }
 echo "алиасы Pathauto: пересчитаны\n";
 
 // ---------------------------------------------------------------------------
-// 5. Метатеги Metatag + SEO-анализ yoast_seo (задание 4)
+// 9. Метатеги Metatag + SEO-анализ yoast_seo (задание 4)
 // ---------------------------------------------------------------------------
 $metatag = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.node');
 $metatag->set('tags.title', '[node:title] | [site:name]')
@@ -506,14 +942,14 @@ $metatag->set('tags.title', '[node:title] | [site:name]')
 echo "метатеги по умолчанию для материалов: title/description заданы\n";
 
 $metatag_global = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.global');
-$metatag_global->set('tags.description', 'Город24 — каталог ноутбуков Lenovo: характеристики, фотографии, цены.')
-  ->set('tags.keywords', 'Lenovo, ноутбуки, каталог, IdeaPad, ThinkPad, Yoga')
+$metatag_global->set('tags.description', 'Город24 — новости Минска: город, транспорт, культура, спорт и технологии.')
+  ->set('tags.keywords', 'Минск, новости, город, транспорт, культура, спорт, технологии')
   ->save();
 
 // ---------------------------------------------------------------------------
-// 6. Webform: форма обратной связи — демонстрация работы модуля (задание 3)
+// 10. Webform: «Прислать новость» — демонстрация работы модуля (задание 3)
 // ---------------------------------------------------------------------------
-if (\Drupal::moduleHandler()->moduleExists('webform') && !Webform::load('obratnaya_svyaz')) {
+if (\Drupal::moduleHandler()->moduleExists('webform') && !Webform::load('prislat_novost')) {
   $elements = <<<'YAML'
 name:
   '#type': textfield
@@ -521,28 +957,44 @@ name:
   '#required': true
 email:
   '#type': email
-  '#title': 'E-mail'
+  '#title': 'E-mail для связи'
+  '#required': true
+rubric:
+  '#type': select
+  '#title': 'Рубрика'
+  '#options':
+    gorod: Город
+    transport: Транспорт
+    proisshestviya: Происшествия
+    kultura: Культура
+    sport: Спорт
+    tehnologii: Технологии
   '#required': true
 message:
   '#type': textarea
-  '#title': 'Сообщение'
-  '#rows': 5
+  '#title': 'Текст новости'
+  '#rows': 6
   '#required': true
 actions:
   '#type': webform_actions
-  '#title': 'Отправить'
+  '#title': 'Отправить в редакцию'
 YAML;
   Webform::create([
-    'id' => 'obratnaya_svyaz',
-    'title' => 'Обратная связь',
-    'description' => 'Вопрос по каталогу ноутбуков Lenovo',
+    'id' => 'prislat_novost',
+    'title' => 'Прислать новость',
+    'description' => 'Форма для читателей портала «Город24»',
     'elements' => $elements,
     'status' => 'open',
   ])->save();
-  echo "веб-форма «Обратная связь»: создана (/form/obratnaya-svyaz)\n";
+  echo "веб-форма «Прислать новость»: создана (/form/prislat-novost)\n";
+}
+// Форма из первой версии лабы больше не нужна.
+if ($old = Webform::load('obratnaya_svyaz')) {
+  $old->delete();
+  echo "веб-форма «Обратная связь»: удалена\n";
 }
 
-// Блок с формой на главной — чтобы форма была видна без перехода.
+// Блок с формой в футере — чтобы форма была видна без перехода.
 if (\Drupal::moduleHandler()->moduleExists('webform')) {
   $webform_block = \Drupal\block\Entity\Block::load('lab8_webform_block');
   if (!$webform_block) {
@@ -558,18 +1010,31 @@ if (\Drupal::moduleHandler()->moduleExists('webform')) {
   $webform_block
     ->set('settings', [
       'id' => 'webform_block',
-      'label' => 'Обратная связь',
+      'label' => 'Прислать новость',
       'label_display' => 'visible',
       'provider' => 'webform',
-      'webform_id' => 'obratnaya_svyaz',
+      'webform_id' => 'prislat_novost',
       'default_data' => '',
       'redirect' => FALSE,
       'lazy' => FALSE,
-      'webform' => 'obratnaya_svyaz',
+      'webform' => 'prislat_novost',
     ])
     ->save();
   echo "блок веб-формы: размещён в регионе footer\n";
 }
+
+// ---------------------------------------------------------------------------
+// 11. Навигация портала: главное меню (рубрики и раздел «Техника»)
+// ---------------------------------------------------------------------------
+lab8_menu('main', 'Главная', 'internal:/', '', 0);
+$rubrics_menu = lab8_menu('main', 'Рубрики', 'route:<nolink>', '', 1);
+$rubrics_parent = 'menu_link_content:' . $rubrics_menu->uuid();
+$weight = 0;
+foreach ($etm->getStorage('taxonomy_term')->loadByProperties(['vid' => 'rubriki']) as $term) {
+  lab8_menu('main', $term->getName(), 'internal:/taxonomy/term/' . $term->id(), $rubrics_parent, $weight++);
+}
+lab8_menu('main', 'Техника', 'internal:/noutbuki', '', 2);
+echo "главное меню: главная, рубрики (6 терминов), раздел «Техника»\n";
 
 // Файлы созданы от root (скрипт запускается из drush), а веб-сервер работает
 // под www-data: без смены владельца производные картинки отдают 500.

@@ -1,5 +1,7 @@
 """Скриншоты ЛР8 (стенд 8104) по пунктам методички labs/Drupal/Drupal_1.pdf.
 
+Сайт — городской новостной портал «Город24», каталог ноутбуков — раздел «Техника».
+
 Запуск (macOS, из корня репозитория):
     python3 tools/screenshots/shots_lab8.py
 Нужны: поднятый стенд lab8 (setup-lab8.sh), Chrome в /Applications и
@@ -50,12 +52,14 @@ def shot(name, url=None, wait=2.0, full=False, scroll=None, scroll_elem=None, cl
     return path
 
 
-x1_carbon = nid_by_alias(LAB, "/noutbuki/lenovo-thinkpad-x1-carbon")
+news_first = nid_by_alias(LAB, "/novosti/minsk-perevodit-eshchyo-40-avtobusov-na-elektroprivod")
 
-# --- Гость: каталог, карточка, веб-форма -------------------------------------
-shot("task5a_каталог_10_ноутбуков_главная.png", BASE + "/", wait=2.5, full=True)
+# --- Гость: лента новостей, рубрика, каталог, форма --------------------------
+shot("task1b_главная_портала_лента_новостей.png", BASE + "/", wait=2.5, full=True)
+shot("task1c_страница_рубрики_портала.png", BASE + "/rubrika/gorod", wait=2.0)
+shot("task5a_каталог_10_ноутбуков_раздел_техника.png", BASE + "/noutbuki", wait=2.5, full=True)
 shot("task5b_карточка_ноутбука_фото_серия_модель.png", BASE + "/noutbuki/lenovo-thinkpad-t490")
-shot("task3e_вебформа_обратная_связь.png", BASE + "/form/obratnaya-svyaz")
+shot("task3e_форма_прислать_новость.png", BASE + "/form/prislat-novost")
 
 # --- Администратор -----------------------------------------------------------
 c.goto(one_time_login(LAB, BASE), wait=3.0)
@@ -66,7 +70,8 @@ shot("task1a_установка_версия_и_состояние_сайта.pn
 
 # Задание 2 — нестандартная тема, логотип, название, фавикон, слоган.
 shot("task2a_тема_установлена_и_по_умолчанию.png", BASE + "/admin/appearance")
-shot("task2b_настройки_темы_логотип_фавикон_слоган.png", BASE + "/admin/appearance/settings/bootstrap5")
+shot("task2b_настройки_темы_логотип_фавикон.png", BASE + "/admin/appearance/settings/bootstrap5")
+shot("task2c_название_и_слоган_сайта.png", BASE + "/admin/config/system/site-information")
 
 # Задание 3 — минимум 5 модулей и показ их работы.
 shot("task3a_модули_включенные.png", BASE + "/admin/modules")
@@ -75,27 +80,29 @@ shot(
     BASE + "/admin/content",
     hover=".toolbar-icon-admin-toolbar-tools-help, .toolbar-menu__item--level-1, #toolbar-item-administration",
 )
-shot("task3c_форма_редактирования_вебформы.png", BASE + "/admin/structure/webform/manage/obratnaya_svyaz")
+shot("task3c_форма_редактирования_вебформы.png", BASE + "/admin/structure/webform/manage/prislat_novost")
+shot("task3d_тип_материала_новость_поля.png", BASE + "/admin/structure/types/manage/news/fields")
 
 # Задание 4 — Pathauto (+ Chaos tool suite, Token), Metatag + Real-time SEO.
 shot("task4a_паттерны_алиасов_pathauto.png", BASE + "/admin/config/search/path/patterns")
 shot("task4b_список_алиасов.png", BASE + "/admin/config/search/path")
 shot("task4c_метатеги_по_умолчанию.png", BASE + "/admin/config/search/metatag")
-# Блок «Метатеги» на форме материала раскрываем, иначе видны только заголовки групп.
+# Блок «Метатеги» на форме новости раскрываем, иначе видны только заголовки групп.
 shot(
-    "task4d_метатеги_и_seo_в_форме_материала.png",
-    BASE + f"/node/{x1_carbon}/edit",
+    "task4d_метатеги_и_seo_в_форме_новости.png",
+    BASE + f"/node/{news_first}/edit",
     wait=3.5,
     open_details=["edit-field-metatag-0", "edit-field-metatag-0-basic"],
     scroll_elem="edit-field-metatag-0",
 )
-shot("task4e_seo_анализ_yoast.png", BASE + f"/node/{x1_carbon}/edit", wait=3.5,
+shot("task4e_seo_анализ_yoast.png", BASE + f"/node/{news_first}/edit", wait=3.5,
      open_details=["edit-field-yoast-seo-0"], scroll_elem="edit-field-yoast-seo-0")
 
-# Задание 5 — каталог, тип материала с полем термина, словарь.
+# Задание 5 — каталог, тип материала с полем термина, словари.
 shot("task5c_поля_типа_материала_ноутбук.png", BASE + "/admin/structure/types/manage/noutbuk/fields")
 shot("task5d_словарь_lenovo_термины.png", BASE + "/admin/structure/taxonomy/manage/lenovo/overview")
 shot("task5e_форма_создания_ноутбука_обязательные_поля.png", BASE + "/node/add/noutbuk", wait=2.5)
+shot("task5f_словарь_рубрики_новостей.png", BASE + "/admin/structure/taxonomy/manage/rubriki/overview")
 
 c.close()
 print("\nвсего кадров:", len(shots))

@@ -1,6 +1,7 @@
 <?php
 /**
  * Конфигурация ЛР9 «Работа с публикациями и меню в Drupal».
+ * Сайт — городской новостной портал «Город24» (продолжение ЛР8).
  *
  * Скрипт идемпотентен: повторный запуск не создаёт дубликатов материалов,
  * блоков и пунктов меню. Требует базу ЛР8 (подключает lab8-config.php).
@@ -16,7 +17,7 @@
  */
 
 $root = \Drupal::root();
-// База ЛР8: тема, каталог, таксономия, алиасы, метатеги.
+// База ЛР8: тема, рубрики, новости, каталог, таксономия, алиасы, метатеги.
 require $root . '/scripts/lab8-config.php';
 
 use Drupal\block\Entity\Block;
@@ -77,6 +78,11 @@ function lab9_menu(string $menu, string $title, string $uri, string $parent = ''
   }
   $link->save();
   return $link;
+}
+
+/** Алиас внутреннего пути (для ссылок в блоках). */
+function lab9_alias(string $path): string {
+  return \Drupal::service('path_alias.manager')->getAliasByPath($path);
 }
 
 // Стили изображений: миниатюры для галереи и фото на странице истории.
@@ -165,54 +171,75 @@ $page_view
 // ---------------------------------------------------------------------------
 // Задание 1. Регион с двумя блоками произвольного содержания
 // ---------------------------------------------------------------------------
-for ($i = 1; $i <= 2; $i++) {
-  $info = "Блок {$i} ЛР9";
-  $found = $etm->getStorage('block_content')->loadByProperties(['info' => $info]);
-  $block_content = reset($found) ?: BlockContent::create(['type' => 'basic', 'info' => $info]);
-  $block_content->set('body', [
-    'value' => 1 === $i
-      ? '<p>Добро пожаловать в каталог ноутбуков Lenovo. Здесь собраны модели IdeaPad, ThinkPad, Yoga и V-серии с фотографиями и характеристиками.</p>'
-      : '<p>Все цены в прайс-листе указаны в белорусских рублях и носят учебный характер. Фотографии — из свободных источников (Wikimedia Commons).</p>',
-    'format' => 'basic_html',
-  ]);
-  $block_content->save();
+// Блок «О портале» — о редакции и форме для читателей.
+$about = $etm->getStorage('block_content')->loadByProperties(['info' => 'О портале']);
+$about_block = reset($about) ?: BlockContent::create(['type' => 'basic', 'info' => 'О портале']);
+$about_block->set('body', [
+  'value' => '<p>«Город24» — городской новостной портал: город, транспорт, происшествия, культура, спорт и технологии. '
+    . 'Редакция работает ежедневно, новости обновляются в течение дня.</p>'
+    . '<p><a href="/form/prislat-novost">Прислать новость в редакцию</a></p>',
+  'format' => 'basic_html',
+]);
+$about_block->save();
 
-  $block_id = 'lab9_block_' . $i;
-  $block = Block::load($block_id) ?: Block::create([
-    'id' => $block_id,
-    'plugin' => 'block_content:' . $block_content->uuid(),
+// Блок «Рубрики» — ссылки на разделы портала (из словаря «Рубрики новостей»).
+$rubric_links = '';
+foreach ($etm->getStorage('taxonomy_term')->loadByProperties(['vid' => 'rubriki']) as $term) {
+  $rubric_links .= '<li><a href="' . lab9_alias('/taxonomy/term/' . $term->id()) . '">' . $term->getName() . '</a></li>';
+}
+$rubrics = $etm->getStorage('block_content')->loadByProperties(['info' => 'Рубрики']);
+$rubrics_block = reset($rubrics) ?: BlockContent::create(['type' => 'basic', 'info' => 'Рубрики']);
+$rubrics_block->set('body', [
+  'value' => '<ul class="list-unstyled">' . $rubric_links . '</ul>',
+  'format' => 'basic_html',
+]);
+$rubrics_block->save();
+
+$sidebar_blocks = [
+  ['id' => 'lab9_block_1', 'label' => 'О портале', 'content' => $about_block, 'weight' => 0],
+  ['id' => 'lab9_block_2', 'label' => 'Рубрики', 'content' => $rubrics_block, 'weight' => 1],
+];
+foreach ($sidebar_blocks as $spec) {
+  $block = Block::load($spec['id']) ?: Block::create([
+    'id' => $spec['id'],
+    'plugin' => 'block_content:' . $spec['content']->uuid(),
     'theme' => 'bootstrap5',
   ]);
   $block
+    ->set('plugin', 'block_content:' . $spec['content']->uuid())
     ->set('region', 'sidebar_first')
-    ->set('weight', $i)
+    ->set('weight', $spec['weight'])
     ->set('settings', [
-      'id' => 'block_content:' . $block_content->uuid(),
-      'label' => "Блок {$i}",
+      'id' => 'block_content:' . $spec['content']->uuid(),
+      'label' => $spec['label'],
       'label_display' => 'visible',
       'provider' => 'block_content',
       'status' => TRUE,
-      'info' => $info,
+      'info' => $spec['content']->get('info')->value,
       'view_mode' => 'full',
     ])
     ->save();
-  echo "блок {$i}: содержимое и размещение в sidebar_first (тема bootstrap5)\n";
+  echo "блок «{$spec['label']}»: размещён в sidebar_first (тема bootstrap5)\n";
 }
 
 // ---------------------------------------------------------------------------
 // Задание 2. Материал статьи и ссылка в меню
 // ---------------------------------------------------------------------------
-$article = lab9_node('article', 'Обзор ноутбуков Lenovo 2026 года', [
+$article = lab9_node('article', 'Как работает редакция «Город24»', [
   'body' => [
-    'value' => '<p>В статье разобраны настройки материала типа Article: публикация, продвижение на главную, закрепление, режим редакции, метатеги и SEO-анализ, размещение ссылки в меню.</p><p>Статья создана вручную через административный интерфейс, поля «Краткое содержание», «Метатеги» и «SEO» заполнены.</p>',
+    'value' => '<p>Редакция городского портала работает в три смены: утренняя выпускает подборку за ночь, '
+      . 'дневная ведёт городские события, вечерняя собирает итоги дня. Материал создан как Article, '
+      . 'чтобы показать его настройки: публикация, продвижение на главную, закрепление, метатеги и SEO-анализ.</p>'
+      . '<p>Читатели присылают новости через форму <a href="/form/prislat-novost">«Прислать новость»</a>, '
+      . 'дежурный редактор проверяет факты и публикует материал в соответствующей рубрике.</p>',
     'format' => 'basic_html',
-    'summary' => 'Настройки материала Article: публикация, продвижение, метатеги, ссылка в меню.',
+    'summary' => 'Как устроена работа редакции «Город24»: смены, проверка фактов, рубрики и форма для читателей.',
   ],
   'promote' => 0,
 ]);
 echo "статья: node/{$article->id()} «{$article->getTitle()}»\n";
-lab9_menu('main', 'Статья', 'internal:/node/' . $article->id(), '', 10);
-echo "пункт меню «Статья»: создан\n";
+lab9_menu('main', 'О редакции', 'internal:/node/' . $article->id(), '', 8);
+echo "пункт меню «О редакции»: создан\n";
 
 // ---------------------------------------------------------------------------
 // Задание 3.1. История фирмы: текст, картинки, ссылки на официальный сайт
@@ -223,7 +250,9 @@ foreach (['history/hq.jpg' => 'Штаб-квартира Lenovo', 'history/x1.jp
 }
 $history = lab9_node('page', 'История фирмы Lenovo', [
   'body' => [
-    'value' => '<p>Компания основана в 1984 году в Пекине группой из одиннадцати инженеров во главе с Лю Чуаньчжи. '
+    'value' => '<p>Материал раздела «Техника»: как китайская компания Legend стала производителем ноутбуков Lenovo, '
+      . 'модели которых собраны в каталоге портала.</p>'
+      . '<p>Компания основана в 1984 году в Пекине группой из одиннадцати инженеров во главе с Лю Чуаньчжи. '
       . 'Первоначальное название — Legend (Lianxiang), первый крупный продукт — плата расширения для IBM PC, '
       . 'позволившая печатать иероглифы на обычном персональном компьютере.</p>'
       . '<p>В 2004 году Legend приобрела подразделение персональных компьютеров IBM и вышла на мировой рынок '
@@ -252,8 +281,8 @@ for ($i = 1; $i <= 8; $i++) {
 }
 $gallery = lab9_node('page', 'Галерея ноутбуков Lenovo', [
   'body' => [
-    'value' => '<p>Галерея фотографий ноутбуков Lenovo. Щелчок по миниатюре открывает снимок в лайтбоксе Colorbox '
-      . 'с навигацией по галерее стрелками.</p>',
+    'value' => '<p>Фотогалерея ноутбуков из каталога портала. Щелчок по миниатюре открывает снимок '
+      . 'в лайтбоксе Colorbox с навигацией по галерее стрелками.</p>',
     'format' => 'basic_html',
   ],
   'field_gallery' => $gallery_photos,
@@ -292,38 +321,51 @@ $price = lab9_node('page', 'Прайс-лист ноутбуков Lenovo', [
 echo "страница «Прайс-лист»: node/{$price->id()} (строк: " . count($price_rows) . ")\n";
 
 // ---------------------------------------------------------------------------
-// Задание 4. Меню: страницы, «Каталог» с пустой ссылкой и терминами, футер
+// Задание 4. Меню: разделы портала, «Каталог» с пустой ссылкой и терминами, футер
 // ---------------------------------------------------------------------------
 $menu_items = [
-  ['История фирмы', $history->id(), 0],
-  ['Галерея', $gallery->id(), 1],
-  ['Прайс-лист', $price->id(), 2],
+  ['История фирмы', $history->id(), 4],
+  ['Галерея', $gallery->id(), 5],
+  ['Прайс-лист', $price->id(), 6],
 ];
 foreach ($menu_items as $item) {
   lab9_menu('main', $item[0], 'internal:/node/' . $item[1], '', $item[2]);
   echo "пункт меню «{$item[0]}»\n";
 }
 
+// «Рубрики» — пустая ссылка, подпункты — термины словаря «Рубрики новостей».
+$rubrics_menu = lab9_menu('main', 'Рубрики', 'route:<nolink>', '', 1);
+$rubrics_parent = 'menu_link_content:' . $rubrics_menu->uuid();
+$weight = 0;
+foreach ($etm->getStorage('taxonomy_term')->loadByProperties(['vid' => 'rubriki']) as $term) {
+  lab9_menu('main', $term->getName(), 'internal:/taxonomy/term/' . $term->id(), $rubrics_parent, $weight++);
+  echo "  подпункт рубрики «{$term->getName()}»\n";
+}
+
 // «Каталог» — пустая ссылка (route:<nolink>), подпункты — термины словаря Lenovo.
-$catalog = lab9_menu('main', 'Каталог', 'route:<nolink>', '', 5);
-$catalog_parent = 'menu_link_content:' . $catalog->uuid();
+$catalog_menu = lab9_menu('main', 'Каталог', 'route:<nolink>', '', 2);
+$catalog_parent = 'menu_link_content:' . $catalog_menu->uuid();
 $weight = 0;
 foreach ($etm->getStorage('taxonomy_term')->loadByProperties(['vid' => 'lenovo']) as $term) {
   lab9_menu('main', $term->getName(), 'internal:/taxonomy/term/' . $term->id(), $catalog_parent, $weight++);
-  echo "  подпункт «{$term->getName()}»\n";
+  echo "  подпункт каталога «{$term->getName()}»\n";
 }
+
+// «Техника» — страница каталога из представления Views (ЛР8).
+lab9_menu('main', 'Техника', 'internal:/noutbuki', '', 3);
 
 // Дополнительное меню в футере.
 lab9_menu('footer', 'Главная', 'internal:/', '', 0);
 foreach ($menu_items as $i => $item) {
   lab9_menu('footer', $item[0], 'internal:/node/' . $item[1], '', $i + 1);
 }
+lab9_menu('footer', 'Прислать новость', 'internal:/form/prislat-novost', '', 4);
 // Название меню, которое видно в подвале и в админке.
 \Drupal::configFactory()->getEditable('system.menu.footer')
   ->set('label', 'Дополнительное меню')
-  ->set('description', 'Дополнительное меню сайта в подвале страницы')
+  ->set('description', 'Дополнительное меню портала в подвале страницы')
   ->save();
-echo "меню footer: 4 пункта\n";
+echo "меню footer: 5 пунктов\n";
 
 // Меню футера выводит штатный блок темы bootstrap5 (system_menu_block:footer),
 // поэтому собственный блок не создаём, а лишний от прошлых прогонов убираем.
@@ -340,7 +382,14 @@ echo "меню footer: выводится штатным блоком темы �
 
 // Пересчитать алиасы новых страниц по паттернам Pathauto из ЛР8.
 $generator = \Drupal::service('pathauto.generator');
+$alias_storage = $etm->getStorage('path_alias');
 foreach ([$history, $gallery, $price, $article] as $node) {
+  if ($node->hasField('path')) {
+    $node->set('path', ['pathauto' => 1]);
+  }
+  foreach ($alias_storage->loadByProperties(['path' => '/node/' . $node->id()]) as $alias) {
+    $alias->delete();
+  }
   $generator->updateEntityAlias($node, 'bulkupdate');
 }
 
@@ -359,8 +408,13 @@ foreach ($etm->getStorage('node')->loadByProperties(['type' => ['article', 'page
 }
 
 $allowed_links = [
-  'main' => array_merge(array_column($menu_items, 0), ['Каталог', 'Статья', 'серия IdeaPad', 'серия ThinkPad', 'серия Yoga', 'серия V']),
-  'footer' => array_merge(['Главная'], array_column($menu_items, 0)),
+  'main' => array_merge(
+    ['Главная', 'Рубрики', 'Каталог', 'Техника', 'О редакции'],
+    array_column($menu_items, 0),
+    ['Город', 'Транспорт', 'Происшествия', 'Культура', 'Спорт', 'Технологии'],
+    ['серия IdeaPad', 'серия ThinkPad', 'серия Yoga', 'серия V']
+  ),
+  'footer' => array_merge(['Главная', 'Прислать новость'], array_column($menu_items, 0)),
 ];
 foreach ($allowed_links as $menu_name => $titles) {
   foreach ($etm->getStorage('menu_link_content')->loadByProperties(['menu_name' => $menu_name]) as $link) {

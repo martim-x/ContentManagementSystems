@@ -74,12 +74,13 @@ check() {
     fi
 }
 check "сайт отвечает" "http://localhost:$PORT/" "Город24"
-check "каталог ноутбуков на главной" "http://localhost:$PORT/" "ThinkPad"
-check "фотография в карточке" "http://localhost:$PORT/" "laptops/"
+check "лента новостей на главной" "http://localhost:$PORT/" "field--name-field-lead"
+check "иллюстрация новости" "http://localhost:$PORT/" "news/news"
 check "метатег description в коде страницы" "http://localhost:$PORT/" 'name="description"'
-check "форма обратной связи" "http://localhost:$PORT/" "obratnaya-svyaz"
+check "каталог раздела «Техника»" "http://localhost:$PORT/noutbuki" "ThinkPad"
+check "страница рубрики" "http://localhost:$PORT/rubrika/gorod" "Город"
+check "форма «Прислать новость»" "http://localhost:$PORT/form/prislat-novost" "Прислать новость"
 check "страница входа" "http://localhost:$PORT/user/login" "Log in"
-check "карточка ноутбука" "http://localhost:$PORT/" "noutbuki/"
 if [ "$FAIL" = "0" ]; then
     echo "ВСЕ ПРОВЕРКИ ПРОЙДЕНЫ"
 else

@@ -76,12 +76,15 @@ check() {
     fi
 }
 check "сайт отвечает" "http://localhost:$PORT/" "Город24"
-check "два блока в боковой колонке" "http://localhost:$PORT/" "Блок 2"
+check "лента новостей на главной" "http://localhost:$PORT/" "field--name-field-lead"
+check "блок «О портале»" "http://localhost:$PORT/" "О портале"
+check "блок «Рубрики»" "http://localhost:$PORT/" "Рубрики"
 check "страница «История фирмы»" "http://localhost:$PORT/stranicy/istoriya-firmy-lenovo" "История фирмы Lenovo"
 check "галерея: миниатюры" "http://localhost:$PORT/stranicy/galereya-noutbukov-lenovo" "gallery/"
 check "галерея: подключён Colorbox" "http://localhost:$PORT/stranicy/galereya-noutbukov-lenovo" "colorbox"
 check "прайс-лист: таблица" "http://localhost:$PORT/stranicy/prays-list-noutbukov-lenovo" "<table"
-check "статья" "http://localhost:$PORT/novosti/obzor-noutbukov-lenovo-2026-goda" "Обзор ноутбуков Lenovo"
+check "статья «О редакции»" "http://localhost:$PORT/novosti/kak-rabotaet-redakciya-gorod24" "редакция"
+check "каталог раздела «Техника»" "http://localhost:$PORT/noutbuki" "ThinkPad"
 check "дополнительное меню в футере" "http://localhost:$PORT/" "Дополнительное меню"
 if [ "$FAIL" = "0" ]; then
     echo "ВСЕ ПРОВЕРКИ ПРОЙДЕНЫ"
