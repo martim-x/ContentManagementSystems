@@ -20,6 +20,7 @@
 | docker-compose | `lab5/docker-compose.yml`, проект `cms-joomla-lab5` |
 | Контейнеры | `web5` (Joomla, порт 8098), `db5` (MariaDB 11), `phpmyadmin5` (порт 8100) — постфиксы, чтобы лаба 5 работала одновременно с лабой 6 |
 | Volumes | `cms-joomla-lab5_joomla_data` (файлы CMS), `cms-joomla-lab5_db_data` (БД) — named, переживают `down` |
+| Сайт | http://localhost:8098 | — |
 | Админка | http://localhost:8098/administrator — `admin` / `admin` |
 | phpMyAdmin | http://localhost:8100 — `joomla` / `joomla` |
 

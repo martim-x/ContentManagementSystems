@@ -1,4 +1,4 @@
-# ЛР2: Знакомство с WordPress (Docker) — сайт «Город24»
+# ЛР2 — WordPress: знакомство с CMS, сайт «Город24»
 
 > Стек Docker живёт в этой папке (`lab2/`): `docker-compose.yml`, `setup-gorod24.sh`, тема `theme/gorod24`, автонаполнение `scripts/setup-content.php`, отчёт в `report/`.
 
