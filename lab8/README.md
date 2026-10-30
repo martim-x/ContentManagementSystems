@@ -63,8 +63,9 @@ Drupal 11 развёрнут через `drush site:install standard`, БД — 
 
 ### Задание 4 — алиасы и метаданные
 
-- Pathauto: `novosti/[node:title]` для новостей, `noutbuki/[node:title]` для каталога,
-  `stranicy/[node:title]` для страниц, `rubrika/[term:name]` для рубрик.
+- Pathauto: `novosti/[node:title]` для новостей и статей, `noutbuki/[node:title]` для
+  каталога, `stranicy/[node:title]` для страниц, `rubrika/[term:name]` для рубрик
+  (всего 5 шаблонов).
 - Metatag: значения по умолчанию для всех материалов + поле «Метатеги» в форме новости
   (заголовок и описание заполнены у каждой новости и выводятся в `<head>`).
 - Real-time SEO (`yoast_seo`): поле с ключевым словом, SEO-заголовком и описанием;
