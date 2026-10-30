@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Модуль «Город24: исправление SEO-виджета».
+ *
+ * Проблема: yoast_seo 2.2.x в обработчике updateSeoData обращается к
+ * `document.getElementById('snippet_title').offsetWidth`, но сниппет
+ * отрисовывает библиотека rtseo.js 2.1.0, и элемента с таким id в разметке
+ * больше нет. Обработчик падает на TypeError, анализ не пересчитывается и
+ * панель навсегда остаётся в состоянии «Bad: no meta description /
+ * please create an SEO title» — даже когда метатеги заполнены и сервер
+ * отдаёт их в AJAX-ответе.
+ *
+ * Модуль добавляет недостающие элементы в контейнер сниппета, чтобы
+ * обработчик смог дочитать ширину и запустить анализ.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeForm;
+
+/**
+ * Подключает скрипт-заплатку на формах добавления и редактирования материала.
+ */
+function gorod24_seo_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  if (!($form_state->getFormObject() instanceof NodeForm) || !isset($form['field_yoast_seo'])) {
+    return;
+  }
+
+  // Редактируемый сниппет в yoast_seo 2.2.x вызывает jQuery-метод у DOM-узла
+  // (snippetTitle.attr(...)) и падает с TypeError ещё до вставки элемента
+  // snippet_title в разметку. Отключаем правку сниппета в настройках виджета.
+  $form['#attached']['drupalSettings']['yoast_seo']['enable_editing'] = [
+    'title' => FALSE,
+    'description' => FALSE,
+  ];
+}
+
+/**
+ * Подключает скрипт-заплатку на страницах материала.
+ *
+ * Через #attached в form_alter библиотека не доезжает до страницы, поэтому
+ * цепляем её на уровне отрисовки страницы.
+ */
+function gorod24_seo_page_attachments_alter(array &$attachments) {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if (in_array($route, ['entity.node.edit_form', 'entity.node.add_form'], TRUE)) {
+    $attachments['#attached']['library'][] = 'gorod24_seo/seo-fix';
+  }
+}

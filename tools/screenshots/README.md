@@ -8,14 +8,15 @@
 
 - поднятые стенды: `sh lab8/setup-lab8.sh`, `sh lab9/setup-lab9.sh`;
 - Google Chrome (`/Applications/Google Chrome.app`);
-- Python 3 и `pip install websocket-client`;
+- Python 3 и зависимости из `requirements.txt`:
+  `python3 -m venv .venv && . .venv/bin/activate && pip install -r tools/screenshots/requirements.txt`;
 - (для админских экранов) доступ к `drush uli` — скрипт сам получает одноразовую ссылку
   и входит администратором.
 
 ## Запуск
 
 ```sh
-python3 tools/screenshots/shots_lab8.py    # 17 кадров ЛР8
+python3 tools/screenshots/shots_lab8.py    # 22 кадра ЛР8
 python3 tools/screenshots/shots_lab9.py    # 12 кадров ЛР9
 ```
 
@@ -27,5 +28,8 @@ python3 tools/screenshots/shots_lab9.py    # 12 кадров ЛР9
 - `common.py` — `one_time_login()` (через `drush uli`) и `nid_by_alias()`: node id ищется
   по алиасу, поэтому сценарии не зависят от автоинкремента материалов.
 - Размер кадра: окно 1440×1100 при `deviceScaleFactor = 2` → PNG 2880×2200.
+- `click()` — синтетический `element.click()` (`isTrusted=false`); `trusted_click()`
+  шлёт настоящее событие мыши через `Input.dispatchMouseEvent` — только так срабатывает
+  AJAX-кнопка «Seo preview» на форме материала (её использует кадр `task4e`).
 
 Скрипты идемпотентны: каждый прогон перезаписывает файлы в `report/`.

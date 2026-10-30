@@ -26,7 +26,7 @@ shots = []
 
 
 def shot(name, url=None, wait=2.0, full=False, scroll=None, scroll_elem=None, click=None, hover=None,
-         open_details=None):
+         open_details=None, trusted_click=None):
     if url:
         c.goto(url, wait=wait)
     if hover:
@@ -38,6 +38,8 @@ def shot(name, url=None, wait=2.0, full=False, scroll=None, scroll_elem=None, cl
         )
     if click:
         c.click(click)
+    if trusted_click:
+        c.trusted_click(trusted_click, wait=6)
     if scroll_elem:
         c.js("document.getElementById('%s').scrollIntoView({block:'start'})" % scroll_elem)
         time.sleep(0.4)
@@ -96,7 +98,8 @@ shot(
     scroll_elem="edit-field-metatag-0",
 )
 shot("task4e_seo_анализ_yoast.png", BASE + f"/node/{news_first}/edit", wait=3.5,
-     open_details=["edit-field-yoast-seo-0"], scroll_elem="edit-field-yoast-seo-0")
+     open_details=["edit-field-yoast-seo-0"], scroll_elem="edit-field-yoast-seo-0",
+     trusted_click="#edit-field-yoast-seo-0-yoast-seo-preview-button")
 
 # Задание 5 — каталог, тип материала с полем термина, словари.
 shot("task5c_поля_типа_материала_ноутбук.png", BASE + "/admin/structure/types/manage/noutbuk/fields")

@@ -1,0 +1,8 @@
+seo-fix:
+  version: 1.x
+  header: true
+  js:
+    js/seo-fix.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings

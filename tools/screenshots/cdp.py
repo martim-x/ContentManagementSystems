@@ -109,6 +109,31 @@ class Chrome:
         time.sleep(wait)
         return ok
 
+    def trusted_click(self, selector, wait=1.5):
+        """Настоящее событие мыши через Input.dispatchMouseEvent.
+
+        Синтетический element.click() помечен isTrusted=false, и часть
+        обработчиков Drupal (в том числе AJAX-кнопка «Seo preview») на него
+        не реагирует — запрос не уходит.
+        """
+        box = self.js(
+            "(function(){var e=document.querySelector(%s); if(!e) return null;"
+            "e.scrollIntoView({block:'center'});"
+            "var r=e.getBoundingClientRect();"
+            "return JSON.stringify({x: Math.round(r.x + r.width/2), y: Math.round(r.y + r.height/2)});})()"
+            % json.dumps(selector)
+        )
+        if not box:
+            return False
+        coords = json.loads(box)
+        for kind in ("mousePressed", "mouseReleased"):
+            self.send("Input.dispatchMouseEvent", {
+                "type": kind, "x": coords["x"], "y": coords["y"],
+                "button": "left", "clickCount": 1,
+            })
+        time.sleep(wait)
+        return True
+
     def hover(self, selector, wait=0.8):
         ok = self.js(
             "(function(){var e=document.querySelector(%s); if(!e) return false;"

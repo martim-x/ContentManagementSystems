@@ -1,0 +1,7 @@
+name: 'Город24: исправление SEO-виджета'
+type: module
+description: 'Проставляет id скрытым полям yoast_seo, чтобы живой SEO-анализ видел SEO-заголовок и описание материала.'
+package: Город24
+core_version_requirement: '^10 || ^11'
+dependencies:
+  - yoast_seo:yoast_seo

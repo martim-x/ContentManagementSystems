@@ -46,6 +46,12 @@ $J sh -c 'cd /opt/drupal && composer require drupal/admin_toolbar drupal/pathaut
 
 echo "== Включение модулей и темы =="
 $J sh -c 'cd /opt/drupal && vendor/bin/drush en admin_toolbar pathauto token metatag webform ctools yoast_seo -y' 2>&1 | tail -6
+
+echo "== Свой модуль-исправление SEO-виджета (gorod24_seo) =="
+$J sh -c 'mkdir -p /opt/drupal/web/modules/custom'
+docker compose cp scripts/modules/. web:/opt/drupal/web/modules/custom/
+$J sh -c 'cd /opt/drupal && vendor/bin/drush en gorod24_seo -y' 2>&1 | tail -3
+$J sh -c 'test -f /opt/drupal/web/modules/custom/gorod24_seo/js/seo-fix.js && cd /opt/drupal && vendor/bin/drush pm:list --status=enabled --filter=gorod24_seo --format=list' | tail -2
 $J sh -c 'cd /opt/drupal && (vendor/bin/drush theme:enable bootstrap5 -y 2>&1 | tail -2); vendor/bin/drush config:set system.theme default bootstrap5 -y 2>&1 | tail -2'
 
 echo "== Перезапуск PHP-FPM после обновления модулей =="
