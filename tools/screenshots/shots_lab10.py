@@ -8,6 +8,7 @@
     tools/screenshots/.venv/bin/python tools/screenshots/shots_lab10.py
 """
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -24,6 +25,9 @@ BASE = "http://localhost:8108"
 os.makedirs(OUT, exist_ok=True)
 
 c = Chrome("/tmp/chrome-lab10-cdp", width=1440, height=1100, scale=2)
+# Профиль Chrome переживает запуски: без сброса cookies «гостевые» кадры
+# снимаются уже залогиненным администратором.
+c.send("Network.clearBrowserCookies")
 shots = []
 
 
@@ -70,6 +74,28 @@ news_nid = nid_by_alias(LAB, news_alias)
 shot("task2a_контактная_форма_на_сайте.png", BASE + "/contact", wait=2.0, full=True)
 shot("task3d_антиспам_captcha_на_форме.png", BASE + "/contact", wait=2.0,
      scroll_elem=".captcha")
+
+# --- Реальное письмо в Mailpit: доказательство, что форма доставляет ---------
+c.goto(BASE + "/contact", wait=1.5)
+captcha_label = c.js("(function(){var l=document.querySelector('label[for=edit-captcha-response]'); return l?l.innerText.trim():'';})()") or ""
+match = re.search(r'\((\d+)\s*\+\s*(\d+)', captcha_label)
+if match:
+    answer = int(match.group(1)) + int(match.group(2))
+    c.js(
+        "(function(){"
+        "var set=function(id,v){var e=document.querySelector(id); if(e){e.value=v;}};"
+        "set('#edit-name','Тестовый Читатель');"
+        "set('#edit-mail','reader@example.com');"
+        "set('#edit-subject-0-value','Проверка доставки через Mailpit');"
+        "set('#edit-message-0-value','Сообщение отправлено контактной формой лабораторной работы.');"
+        "set('#edit-captcha-response','%d');"
+        "})()" % answer
+    )
+    time.sleep(6)
+    c.js("document.querySelector('#edit-submit').click()")
+    time.sleep(3)
+c.goto("http://localhost:8026", wait=2.0)
+shot("task2c_письмо_в_mailpit.png")
 
 # --- Статистика: реальные просмотры материалов ------------------------------
 for alias in [
@@ -118,7 +144,7 @@ c.js(
 )
 c.trusted_click("#edit-submit", wait=15)
 shot("task4b_резервная_копия_создана.png", BASE + "/admin/config/development/backup_migrate/backups", wait=2.0)
-shot("task4a_резервное_копирование_настройки.png", BASE + "/admin/config/development/backup_migrate")
+shot("task4a_резервное_копирование_настройки.png", BASE + "/admin/config/development/backup_migrate/schedule/edit/daily_schedule", wait=2.5)
 shot("task4c_расписание_копирования.png", BASE + "/admin/config/development/backup_migrate/schedule")
 
 shot("task4d_статистика_посещаемости.png", BASE + "/admin/reports/poseshchaemost", wait=2.5)

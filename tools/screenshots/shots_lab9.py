@@ -23,10 +23,13 @@ BASE = "http://localhost:8106"
 os.makedirs(OUT, exist_ok=True)
 
 c = Chrome("/tmp/chrome-lab9-cdp", width=1440, height=1100, scale=2)
+# Профиль Chrome переживает запуски: без сброса cookies «гостевые» кадры
+# снимаются уже залогиненным администратором.
+c.send("Network.clearBrowserCookies")
 shots = []
 
 
-def shot(name, url=None, wait=2.0, full=False, scroll=None, click=None, click_js=None, hover=None):
+def shot(name, url=None, wait=2.0, full=False, scroll=None, scroll_js=None, click=None, click_js=None, hover=None):
     if url:
         c.goto(url, wait=wait)
     if hover:
@@ -36,6 +39,9 @@ def shot(name, url=None, wait=2.0, full=False, scroll=None, click=None, click_js
         time.sleep(1.0)
     if click:
         c.click(click, wait=1.5)
+    if scroll_js:
+        c.js(scroll_js)
+        time.sleep(0.5)
     if scroll is not None:
         c.scroll_to(scroll)
     path = os.path.join(OUT, name)
@@ -67,9 +73,11 @@ shot("task4c_дополнительное_меню_в_футере.png", BASE + 
 c.goto(one_time_login(LAB, BASE), wait=3.0)
 print("вход выполнен:", c.js("document.body.innerText.includes('admin')"))
 
-shot("task1a_регион_два_блока_настройка_блоков.png", BASE + "/admin/structure/block", wait=2.5)
+shot("task1a_регион_два_блока_настройка_блоков.png", BASE + "/admin/structure/block", wait=2.5,
+     scroll_js="(function(){var rows=Array.from(document.querySelectorAll('tr')); var r=rows.find(function(x){return x.innerText.trim().indexOf('О портале')===0;}); if(r){r.scrollIntoView({block:'center'});} return !!r;})()")
 shot("task2a_статья_настройки_материала.png", BASE + f"/node/{article}/edit", wait=3.0, full=True)
-shot("task4a_меню_структура_каталог_подпункты.png", BASE + "/admin/structure/menu/manage/main", wait=2.5)
+shot("task4a_меню_структура_каталог_подпункты.png", BASE + "/admin/structure/menu/manage/main", wait=2.5,
+     scroll_js="(function(){var rows=Array.from(document.querySelectorAll('tr')); var r=rows.find(function(x){return x.innerText.trim().indexOf('Каталог')===0;}); if(r){r.scrollIntoView({block:'center'});} return !!r;})()")
 shot("task4b_дополнительное_меню_настройка.png", BASE + "/admin/structure/menu/manage/footer", wait=2.5)
 
 c.close()

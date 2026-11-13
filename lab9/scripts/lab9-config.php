@@ -57,9 +57,14 @@ function lab9_file(string $rel, string $target_dir): int {
 function lab9_node(string $type, string $title, array $values = []): Node {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
   $found = $storage->loadByProperties(['type' => $type, 'title' => $title]);
-  $node = reset($found) ?: Node::create(['type' => $type, 'title' => $title]);
+  $node = reset($found) ?: Node::create(['type' => $type, 'title' => $title, 'uid' => 1]);
   foreach ($values as $field => $value) {
     $node->set($field, $value);
+  }
+  // Материалы, созданные прошлыми прогонами без автора, иначе остаются
+  // «Submitted by Anonymous» и ломают колонку «Автор» в отчётах/Views.
+  if (!$node->getOwnerId()) {
+    $node->setOwnerId(1);
   }
   $node->set('status', 1);
   $node->save();
@@ -238,7 +243,7 @@ $article = lab9_node('article', 'Как работает редакция «Го
   'promote' => 0,
 ]);
 echo "статья: node/{$article->id()} «{$article->getTitle()}»\n";
-lab9_menu('main', 'О редакции', 'internal:/node/' . $article->id(), '', 8);
+lab9_menu('main', 'О редакции', 'entity:node/' . $article->id(), '', 8);
 echo "пункт меню «О редакции»: создан\n";
 
 // ---------------------------------------------------------------------------
@@ -330,7 +335,7 @@ $menu_items = [
   ['Прайс-лист', $price->id(), 6],
 ];
 foreach ($menu_items as $item) {
-  lab9_menu('main', $item[0], 'internal:/node/' . $item[1], '', $item[2]);
+  lab9_menu('main', $item[0], 'entity:node/' . $item[1], '', $item[2]);
   echo "пункт меню «{$item[0]}»\n";
 }
 
@@ -358,7 +363,7 @@ lab9_menu('main', 'Техника', 'internal:/noutbuki', '', 3);
 // Дополнительное меню в футере.
 lab9_menu('footer', 'Главная', 'internal:/', '', 0);
 foreach ($menu_items as $i => $item) {
-  lab9_menu('footer', $item[0], 'internal:/node/' . $item[1], '', $i + 1);
+  lab9_menu('footer', $item[0], 'entity:node/' . $item[1], '', $i + 1);
 }
 lab9_menu('footer', 'Прислать новость', 'internal:/form/prislat-novost', '', 4);
 // Название меню, которое видно в подвале и в админке.

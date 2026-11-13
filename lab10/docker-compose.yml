@@ -49,6 +49,40 @@ services:
     networks:
       - lab10
 
+  # SMTP-приёмник для проверки контактной формы: письма не уходят в интернет,
+  # а складываются в Mailpit. UI: http://localhost:8026, SMTP: mailpit:1025.
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit10
+    ports:
+      - "8026:8025"
+      - "1026:1025"
+    networks:
+      - lab10
+
+  # Drupal cron для ежедневного Backup and Migrate: без него расписание
+  # «daily» не запускается само.
+  cron:
+    build: .
+    container_name: cron10
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - web_data:/var/www/html
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        while true; do
+          if [ -f /var/www/html/sites/default/settings.php ]; then
+            cd /opt/drupal && vendor/bin/drush cron || true;
+          fi;
+          sleep 300;
+        done
+    restart: unless-stopped
+    networks:
+      - lab10
+
 volumes:
   db_data:
   web_data:

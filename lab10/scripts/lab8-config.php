@@ -910,6 +910,29 @@ if (!$rubric_pattern) {
   echo "паттерн Pathauto «Рубрики»: rubrika/[term:name]\n";
 }
 
+// Алиас терминов каталога Lenovo: /katalog/<серия>. Без него пункты меню
+// «Каталог» ведут на сырые /taxonomy/term/N.
+$catalog_pattern = PathautoPattern::load('katalog');
+if (!$catalog_pattern) {
+  PathautoPattern::create([
+    'id' => 'katalog',
+    'label' => 'Каталог Lenovo',
+    'type' => 'canonical_entities:taxonomy_term',
+    'pattern' => 'katalog/[term:name]',
+    'selection_criteria' => [
+      'entity_bundle:taxonomy_term' => [
+        'id' => 'entity_bundle:taxonomy_term',
+        'bundles' => ['lenovo' => 'lenovo'],
+        'negate' => FALSE,
+        'context_mapping' => ['taxonomy_term' => 'taxonomy_term'],
+      ],
+    ],
+    'selection_logic' => 'and',
+    'weight' => 0,
+  ])->save();
+  echo "паттерн Pathauto «Каталог Lenovo»: katalog/[term:name]\n";
+}
+
 // Пересчитать алиасы у существующих материалов (идемпотентно).
 // Алиасы, выставленные вручную (в том числе прошлыми прогонами), Pathauto не
 // трогает, поэтому сначала удаляем их, потом генератор строит алиас из шаблона.

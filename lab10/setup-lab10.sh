@@ -83,6 +83,7 @@ check() {
 check "сайт отвечает" "http://localhost:$PORT/" "Город24"
 check "лента новостей на главной" "http://localhost:$PORT/" "field--name-field-lead"
 check "контактная форма" "http://localhost:$PORT/contact" "Обратная связь"
+check "почтовый приёмник Mailpit" "http://localhost:8026" "Mailpit"
 check "карта сайта XML" "http://localhost:$PORT/sitemap.xml" "<urlset"
 check "микроразметка JSON-LD" "http://localhost:$PORT/" "application/ld+json"
 check "каталог раздела «Техника»" "http://localhost:$PORT/noutbuki" "ThinkPad"

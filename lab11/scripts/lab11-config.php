@@ -242,8 +242,9 @@ $articles = [
 foreach ($articles as $data) {
   $storage = $etm->getStorage('node');
   $found = $storage->loadByProperties(['type' => 'article', 'title' => $data['title']]);
-  $node = reset($found) ?: Node::create(['type' => 'article', 'title' => $data['title']]);
+  $node = reset($found) ?: Node::create(['type' => 'article', 'title' => $data['title'], 'uid' => 1]);
   $node->set('body', ['value' => $data['body'], 'format' => 'basic_html']);
+  $node->setOwnerId(1);
   $node->set('status', 1);
   $node->setCreatedTime($data['created']);
   $node->save();
@@ -276,7 +277,7 @@ $default_options = [
         'uid' => 'uid',
         'created' => 'created',
       ],
-      'default' => 'created',
+      'default' => '',
       'info' => [
         'title' => ['sortable' => TRUE, 'align' => ''],
         'uid' => ['sortable' => TRUE, 'align' => ''],
@@ -367,11 +368,19 @@ $default_options = [
       'id' => 'created',
       'table' => 'node_field_data',
       'field' => 'created',
+      'relationship' => 'none',
+      'group_type' => 'group',
+      'admin_label' => '',
       'entity_type' => 'node',
       'entity_field' => 'created',
       'plugin_id' => 'date',
       'order' => 'DESC',
-      'expose' => ['operator' => ''],
+      'expose' => [
+        'label' => '',
+        'field_identifier' => 'created',
+      ],
+      'exposed' => FALSE,
+      'granularity' => 'second',
     ],
   ],
   'access' => ['type' => 'perm', 'perm' => 'access content'],

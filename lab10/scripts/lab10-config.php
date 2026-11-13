@@ -19,6 +19,7 @@
 use Drupal\captcha\Entity\CaptchaPoint;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\schema_metatag\SchemaMetatagManager;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 
@@ -88,6 +89,23 @@ $contact
 lab10_menu('main', 'Обратная связь', 'internal:/contact', 3);
 echo "контактная форма: /contact, получатель redakciya@gorod24.local\n";
 
+// Отправка почты: SMTP в контейнер Mailpit. sendmail в образе drupal:11 нет,
+// поэтому без этого настройка «сообщение отправлено» врёт — письмо падает.
+\Drupal::configFactory()->getEditable('system.site')
+  ->set('mail', 'redakciya@gorod24.local')
+  ->save();
+\Drupal::configFactory()->getEditable('system.mail')
+  ->set('interface.default', 'symfony_mailer')
+  ->set('interface.webform', 'symfony_mailer')
+  ->set('mailer_dsn.scheme', 'smtp')
+  ->set('mailer_dsn.host', 'mailpit')
+  ->set('mailer_dsn.port', 1025)
+  ->set('mailer_dsn.user', NULL)
+  ->set('mailer_dsn.password', NULL)
+  ->set('mailer_dsn.options', [])
+  ->save();
+echo "почта: SMTP mailpit:1025, отправитель redakciya@gorod24.local\n";
+
 // Форма доступна гостям и зарегистрированным пользователям.
 foreach (['anonymous', 'authenticated'] as $rid) {
   $r = Role::load($rid);
@@ -128,14 +146,23 @@ foreach (['rubriki', 'lenovo'] as $vocabulary) {
 echo "simple_sitemap: карта сайта /sitemap.xml, материалы и рубрики включены\n";
 
 // 3.2. Микроразметка Schema.org: Article для материалов, Organization для сайта.
+// author и publisher задаются вложенными объектами: строка «admin»/«Город24»
+// в JSON-LD не соответствует схеме schema.org и не проходит проверку Google.
 $node_defaults = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.node');
 $node_defaults->set('tags.schema_article_type', 'Article')
   ->set('tags.schema_article_headline', '[node:title]')
   ->set('tags.schema_article_description', '[node:summary]')
   ->set('tags.schema_article_date_published', '[node:created:html_datetime]')
   ->set('tags.schema_article_date_modified', '[node:changed:html_datetime]')
-  ->set('tags.schema_article_author', '[node:author]')
-  ->set('tags.schema_article_publisher', '[site:name]')
+  ->set('tags.schema_article_author', SchemaMetatagManager::serialize([
+    '@type' => 'Person',
+    'name' => '[node:author]',
+  ]))
+  ->set('tags.schema_article_publisher', SchemaMetatagManager::serialize([
+    '@type' => 'Organization',
+    'name' => '[site:name]',
+    'url' => '[site:url]',
+  ]))
   ->set('tags.schema_article_main_entity_of_page', '[node:url]')
   ->save();
 

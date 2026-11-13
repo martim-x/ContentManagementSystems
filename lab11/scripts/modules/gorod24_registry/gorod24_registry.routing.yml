@@ -4,4 +4,4 @@ gorod24_registry.report:
     _controller: '\Drupal\gorod24_registry\Controller\RegistryController::report'
     _title: 'Реестр моделей'
   requirements:
-    _permission: 'access content'
+    _permission: 'access administration pages'

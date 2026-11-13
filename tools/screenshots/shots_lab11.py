@@ -22,6 +22,9 @@ ADMINER = "http://localhost:8111"
 os.makedirs(OUT, exist_ok=True)
 
 c = Chrome("/tmp/chrome-lab11-cdp", width=1440, height=1100, scale=2)
+# Профиль Chrome переживает запуски: без сброса cookies «гостевые» кадры
+# снимаются уже залогиненным администратором.
+c.send("Network.clearBrowserCookies")
 shots = []
 
 
