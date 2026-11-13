@@ -1,0 +1,7 @@
+news.page:
+  path: '/admin/config/services/news'
+  defaults:
+    _controller: '\Drupal\news\Controller\NewsController::page'
+    _title: 'News'
+  requirements:
+    _permission: 'access administration pages'

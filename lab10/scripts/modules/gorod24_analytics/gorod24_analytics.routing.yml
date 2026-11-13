@@ -1,0 +1,7 @@
+gorod24_analytics.report:
+  path: '/admin/reports/poseshchaemost'
+  defaults:
+    _controller: '\Drupal\gorod24_analytics\Controller\VisitReportController::report'
+    _title: 'Посещаемость материалов'
+  requirements:
+    _permission: 'view post access counter'

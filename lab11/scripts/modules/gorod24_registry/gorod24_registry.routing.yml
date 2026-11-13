@@ -1,0 +1,7 @@
+gorod24_registry.report:
+  path: '/admin/reports/gorod24-registry'
+  defaults:
+    _controller: '\Drupal\gorod24_registry\Controller\RegistryController::report'
+    _title: 'Реестр моделей'
+  requirements:
+    _permission: 'access content'

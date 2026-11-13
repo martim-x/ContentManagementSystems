@@ -1,0 +1,6 @@
+news.page:
+  title: 'News'
+  description: 'Лента новостей портала и управление публикациями.'
+  parent: system.admin_config_services
+  route_name: news.page
+  weight: 10

@@ -1,0 +1,6 @@
+gorod24_registry.report:
+  title: 'Реестр моделей'
+  description: 'Содержимое собственной таблицы gorod24_registry.'
+  parent: system.admin_reports
+  route_name: gorod24_registry.report
+  weight: 10

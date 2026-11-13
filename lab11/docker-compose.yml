@@ -1,0 +1,55 @@
+name: cms-drupal-lab11
+
+services:
+  db:
+    image: postgres:16
+    container_name: db11
+    environment:
+      POSTGRES_DB: drupal
+      POSTGRES_USER: drupal
+      POSTGRES_PASSWORD: drupal
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U drupal"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - lab11
+
+  web:
+    build: .
+    container_name: web11
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8110:80"
+    volumes:
+      - web_data:/var/www/html
+    healthcheck:
+      test: ["CMD-SHELL", "test -d /var/www/html"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lab11
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer11
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8111:8080"
+    networks:
+      - lab11
+
+volumes:
+  db_data:
+  web_data:
+
+networks:
+  lab11:

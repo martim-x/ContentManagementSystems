@@ -1,6 +1,6 @@
 # Сценарии скриншотов для отчётов
 
-Скрипты снимают экраны стендов ЛР8/ЛР9 по пунктам методичек и кладут их в `labN/report/`.
+Скрипты снимают экраны стендов ЛР8–ЛР11 по пунктам методичек и кладут их в `labN/report/`.
 Имена файлов соответствуют пунктам задания (`task5a_…`, `task3c_…`), поэтому скриншот
 всегда можно сопоставить с требованием.
 
@@ -18,7 +18,14 @@
 ```sh
 python3 tools/screenshots/shots_lab8.py    # 22 кадра ЛР8
 python3 tools/screenshots/shots_lab9.py    # 12 кадров ЛР9
+python3 tools/screenshots/shots_lab10.py   # 14 кадров ЛР10
+python3 tools/screenshots/shots_lab11.py   # 15 кадров ЛР11
 ```
+
+`shots_lab10.py` перед кадром статистики записывает реальные просмотры через
+endpoint модуля Statistics и создаёт резервную копию штатной формой Backup and
+Migrate. `shots_lab11.py` для кадра таблицы входит в Adminer (PostgreSQL,
+`drupal` / `drupal`) и открывает `gorod24_registry`.
 
 ## Как это работает
 

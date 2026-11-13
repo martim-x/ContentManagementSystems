@@ -1,0 +1,7 @@
+gorod24_slogan.settings:
+  path: '/admin/config/system/slogan'
+  defaults:
+    _form: '\Drupal\gorod24_slogan\Form\SloganForm'
+    _title: 'Слоган сайта'
+  requirements:
+    _permission: 'administer site configuration'

@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Установка модуля «Город24: слоган».
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Меняет конфигурацию сайта: устанавливает новый слоган.
+ */
+function gorod24_slogan_install() {
+  \Drupal::configFactory()->getEditable('system.site')
+    ->set('slogan', 'Город24: новости Минска каждый день')
+    ->save();
+}

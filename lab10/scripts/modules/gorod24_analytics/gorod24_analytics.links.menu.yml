@@ -1,0 +1,6 @@
+gorod24_analytics.report:
+  title: 'Посещаемость материалов'
+  description: 'Просмотры материалов портала по данным Statistics.'
+  parent: system.admin_reports
+  route_name: gorod24_analytics.report
+  weight: 0

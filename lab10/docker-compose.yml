@@ -1,0 +1,57 @@
+name: cms-drupal-lab10
+
+services:
+  db:
+    image: mariadb:11
+    container_name: db10
+    environment:
+      MARIADB_DATABASE: drupal
+      MARIADB_USER: drupal
+      MARIADB_PASSWORD: drupal
+      MARIADB_ROOT_PASSWORD: root
+    command: --max-allowed-packet=64M
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u drupal -pdrupal --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - lab10
+
+  web:
+    build: .
+    container_name: web10
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8108:80"
+    volumes:
+      - web_data:/var/www/html
+    healthcheck:
+      test: ["CMD-SHELL", "test -d /var/www/html"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lab10
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer10
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8109:8080"
+    networks:
+      - lab10
+
+volumes:
+  db_data:
+  web_data:
+
+networks:
+  lab10:

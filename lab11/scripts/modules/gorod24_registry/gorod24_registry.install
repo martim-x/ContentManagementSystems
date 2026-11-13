@@ -1,0 +1,62 @@
+<?php
+/**
+ * @file
+ * Установка и схема таблицы реестра моделей.
+ */
+
+/**
+ * Implements hook_schema().
+ *
+ * Таблица создаётся ядром при установке модуля.
+ */
+function gorod24_registry_schema() {
+  return [
+    'gorod24_registry' => [
+      'description' => 'Реестр моделей ноутбуков портала «Город24».',
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'model' => [
+          'type' => 'varchar',
+          'length' => 128,
+          'not null' => TRUE,
+        ],
+        'series' => [
+          'type' => 'varchar',
+          'length' => 64,
+          'not null' => FALSE,
+        ],
+        'created' => [
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Заполняет созданную таблицу начальными записями.
+ */
+function gorod24_registry_install() {
+  $rows = [
+    ['model' => 'ThinkPad T490', 'series' => 'ThinkPad'],
+    ['model' => 'ThinkPad X1 Carbon', 'series' => 'ThinkPad'],
+    ['model' => 'IdeaPad Flex 14', 'series' => 'IdeaPad'],
+    ['model' => 'Yoga 3 Pro', 'series' => 'Yoga'],
+    ['model' => 'V330-15IKB', 'series' => 'V'],
+  ];
+  $database = \Drupal::database();
+  $time = \Drupal::time()->getRequestTime();
+  foreach ($rows as $row) {
+    $row['created'] = $time;
+    $database->insert('gorod24_registry')->fields($row)->execute();
+  }
+}

@@ -1,0 +1,6 @@
+gorod24_slogan.settings:
+  title: 'Слоган сайта'
+  description: 'Программный вывод и изменение слогана портала.'
+  parent: system.admin_config_system
+  route_name: gorod24_slogan.settings
+  weight: 10
